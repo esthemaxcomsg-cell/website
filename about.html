@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us | Esthemax</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --cream:#F7F1E6; --cream-2:#F1E9DA; --paper:#FAF6EE; --ink:#17130E; --soft:#55493C; --line:#D9CDBB; --gold:#B08D57; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  img { max-width:100%; display:block; }
+  a { color:inherit; }
+  .site-header { position:sticky; top:0; z-index:60; background:rgba(247,241,230,0.92); backdrop-filter:blur(12px); border-bottom:1px solid rgba(217,205,187,0.55); }
+  .header-in { max-width:1560px; margin:0 auto; padding:0 40px; height:72px; display:flex; align-items:center; gap:34px; }
+  .logo-img { height:26px; width:auto; }
+  .main-nav { display:flex; gap:30px; margin:0 auto; }
+  .main-nav a { font-size:12px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; text-decoration:none; padding:8px 2px; border-bottom:1px solid transparent; transition:border-color 0.25s; white-space:nowrap; }
+  .main-nav a:hover.main-nav a.on { border-color:var(--ink); }
+  .header-right { display:flex; align-items:center; gap:20px; }
+  .hicon svg { width:18px; height:18px; stroke:var(--ink); fill:none; stroke-width:1.5; }
+
+  .wrap { max-width:1080px; margin:0 auto; padding:0 40px; }
+  .about-hero { padding:90px 0 56px; }
+  .eyebrow { font-size:11px; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:18px; }
+  h1 { font-family:'Playfair Display',serif; font-weight:500; font-size:clamp(40px,5vw,66px); line-height:1.04; text-transform:uppercase; letter-spacing:0.01em; margin-bottom:24px; }
+  .about-hero p.lead { font-size:17px; font-weight:300; color:var(--soft); max-width:640px; line-height:1.75; }
+
+  .about-img { border-radius:14px; overflow:hidden; margin:26px 0 70px; }
+  .about-img img { width:100%; height:clamp(260px,44vh,460px); object-fit:cover; }
+
+  .story { display:grid; grid-template-columns:1fr 1fr; gap:clamp(30px,6vw,90px); padding-bottom:40px; }
+  .story h2 { font-family:'Playfair Display',serif; font-weight:500; font-size:clamp(24px,2.4vw,32px); line-height:1.2; }
+  .story p { font-size:15px; line-height:1.8; color:var(--soft); margin-bottom:18px; }
+
+  .pillars { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding:40px 0 90px; }
+  .pillar { border-top:2px solid var(--gold); padding-top:22px; }
+  .pillar h3 { font-size:13px; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:10px; }
+  .pillar p { font-size:13.5px; line-height:1.7; color:var(--soft); }
+
+  .cta-band { background:var(--cream-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .cta-in { max-width:1080px; margin:0 auto; padding:64px 40px; display:flex; align-items:center; justify-content:space-between; gap:30px; flex-wrap:wrap; }
+  .cta-in h2 { font-family:'Playfair Display',serif; font-weight:500; font-size:clamp(24px,2.6vw,34px); }
+  .btn-dark { display:inline-block; background:var(--ink); color:#F6EFE2; text-decoration:none; font-size:12px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; padding:17px 38px; border-radius:3px; transition:transform 0.25s ease; }
+  .btn-dark:hover { transform:translateY(-2px); }
+
+  .site-footer { background:var(--paper); }
+  .footer-in { max-width:1560px; margin:0 auto; padding:70px 40px 30px; }
+  .footer-grid { display:grid; grid-template-columns:1.6fr 1fr 1fr; gap:40px; margin-bottom:54px; }
+  .footer-grid h5 { font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--soft); margin-bottom:18px; }
+  .footer-grid ul { list-style:none; }
+  .footer-grid li { margin-bottom:10px; }
+  .footer-grid a { font-size:13.5px; text-decoration:none; }
+  .footer-grid a:hover { text-decoration:underline; }
+  .footer-contact p { font-size:13.5px; color:var(--soft); line-height:1.7; margin-top:14px; max-width:300px; }
+  .footer-base { border-top:1px solid var(--line); padding-top:24px; display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
+  .footer-base p { font-size:12px; color:var(--soft); }
+  .footer-base .pol { display:flex; gap:26px; }
+  .footer-base .pol a { font-size:12px; color:var(--soft); text-decoration:none; }
+
+  @media (max-width:900px) {
+    .main-nav { display:none; }
+    .wrap.header-in.cta-in.footer-in { padding-left:20px; padding-right:20px; }
+    .story { grid-template-columns:1fr; }
+    .pillars { grid-template-columns:1fr; }
+    .footer-grid { grid-template-columns:1fr 1fr; }
+    .about-hero { padding:60px 0 40px; }
+  }
+</style>
+<link rel="stylesheet" href="assets/reveal.css">
+<link rel="stylesheet" href="assets/theme.css?v=8">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-in">
+    <a href="index.html" aria-label="Esthemax home"><img src="assets/logo-esthemax.png" alt="esthemax professional" style="height:24px; width:auto; display:block;"></a>
+    <nav class="main-nav">
+      <a href="shop.html">Collection</a>
+    <a href="beauty-resource.html">Beauty Resource</a>
+      <a href="about.html" class="on">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="header-right">
+      <a class="hicon" href="#" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></a>
+      <a class="hicon" href="#" aria-label="Cart"><svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></a>
+    </div>
+  </div>
+</header>
+
+<section class="banner-hero">
+  <div class="bh-bg"><img src="assets/banners/hero-about.jpg" alt="Esthemax jars and clay on a marble surface"></div>
+  <div class="bh-veil"></div>
+  <div class="bh-in">
+    <div class="bh-copy">
+      <div class="eyebrow">About Esthemax</div>
+      <h1>Texture,<br>Transformed.</h1>
+      <p>A professional skincare house built around one idea: that a treatment should feel as remarkable as its results.</p>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+  <div style="height:clamp(46px,7vh,74px)"></div>
+
+  <div class="story">
+    <h2>The Hydrojelly Difference</h2>
+    <div>
+      <p>Hydrojelly masks are infused with electrolytes to boost skin hydration, just drinking water is not enough. Each mask forms a vacuum-like seal that compresses facial contours, allowing complete absorption of organic nutrition and electrolytes into the deep layers of the skin.</p>
+      <p>Formulated with refined algae, electrolytes and organic active ingredients, the masks have an instant cooling and soothing effect that is not only refreshing, but helps firm, soothe and revitalize the skin for a natural, subtle glow.</p>
+      <p>We prefer to avoid the chemicals and preservatives, like parabens, found in gel and liquid activators. Our dry powder formulas keep every ingredient fresh while retaining all the natural benefits, each mask is simply activated with water, mixed fresh for every single treatment.</p>
+    </div>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <h3>38 Targeted Formulas</h3>
+      <p>Purpose-driven blends for every skin need and treatment goal, from Hyaluronic Acid to Salmon DNA PDRN.</p>
+    </div>
+    <div class="pillar">
+      <h3>Professional First</h3>
+      <p>Created for experts to deliver consistent, visible results in treatment rooms, spas and studios.</p>
+    </div>
+    <div class="pillar">
+      <h3>Made in USA</h3>
+      <p>Cruelty-free formulas with certified organic ingredients, brought to Singapore by Esthemax Singapore.</p>
+    </div>
+  </div>
+</main>
+
+<div class="cta-band">
+  <div class="cta-in">
+    <h2>Experience the ritual for yourself.</h2>
+    <a class="btn-dark" href="shop.html">Visit the Shop &rarr;</a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-in">
+    <div class="footer-grid">
+      <div class="footer-contact">
+        <a href="index.html"><img src="assets/logo-esthemax.png" alt="esthemax professional" style="height:24px; width:auto; display:block;"></a>
+        <p>18 Boon Lay Way, Tradehub 21, #10-165, Singapore 609966<br>(+65) 9693 8980<br>enquiry@esthemax.com.sg</p>
+      </div>
+      <div>
+        <h5>Collection</h5>
+        <ul>
+          <li><a href="hydrojelly-collection.html">Hydrojelly Collection</a></li>
+          <li><a href="serums.html">Serums</a></li>
+          <li><a href="innovation-creams.html">Innovation Creams</a></li>
+          <li><a href="cleansers.html">Cleansers &amp; Prep</a></li>
+          <li><a href="massage-body.html">Massage, Body &amp; Sun</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="beauty-resource.html">Beauty Resource</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-base">
+      <p>&copy; 2026 Esthemax Singapore. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+<script src="assets/reveal.js"></script>
+</body>
+</html>

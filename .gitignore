@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+._*
+
+# Editor / tooling
+.claude/
+.vscode/
+.idea/
+node_modules/
+
+# Working source material (large originals kept locally, not needed to run the site)
+newwebsite/
+Hydrojelly Mask page/
+*.mp4
+!assets/banners/*.mp4
+ChatGPT Image *.png
+hf_2026*.mp4
+textures.png
+6918e2e4-*.png
+63494c17-*.png
+about us.png
+contact us.png
+beauty resource hero.png

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beauty Resource CMS | Esthemax</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#FDFBF8; --panel:#F8E7ED; --ink:#221A1E; --soft:#6E5B63; --line:#EDDCE3; --pink:#D6247A; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Jost',sans-serif; background:var(--paper); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  a { color:inherit; }
+  .top { position:sticky; top:0; z-index:10; background:#fff; border-bottom:1px solid var(--line); }
+  .top-in { max-width:1200px; margin:0 auto; padding:16px 30px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+  .brand-cms { font-weight:600; font-size:20px; color:var(--pink); text-decoration:none; }
+  .brand-cms span { font-weight:400; color:var(--soft); font-size:13px; margin-left:10px; }
+  .top-in .grow { flex:1; }
+  .btn { font-family:'Jost'; font-size:11.5px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; border:none; cursor:pointer; border-radius:999px; padding:12px 22px; text-decoration:none; display:inline-block; }
+  .btn.pink { background:var(--pink); color:#fff; }
+  .btn.ghost { background:transparent; border:1px solid var(--ink); color:var(--ink); }
+  .btn.tiny { padding:8px 16px; font-size:10.5px; }
+  .btn.danger { background:transparent; border:1px solid #C0392B; color:#C0392B; }
+
+  .wrap { max-width:1200px; margin:0 auto; padding:34px 30px 90px; display:grid; grid-template-columns:340px 1fr; gap:30px; }
+  .col-list h2.col-form h2 { font-family:'Playfair Display',serif; font-weight:500; font-size:22px; margin-bottom:16px; }
+  .hint { background:var(--panel); border-radius:14px; padding:16px 18px; font-size:12.5px; line-height:1.65; color:var(--soft); margin-bottom:20px; }
+  .hint b { color:var(--ink); }
+  .plist { display:flex; flex-direction:column; gap:10px; }
+  .pitem { background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px 16px; cursor:pointer; transition:border-color 0.2s; }
+  .pitem:hover.pitem.sel { border-color:var(--pink); }
+  .pitem h4 { font-size:14px; margin-bottom:4px; }
+  .pitem .sub { font-size:11.5px; color:var(--soft); display:flex; gap:10px; }
+  .pitem .badge { color:var(--pink); font-weight:600; }
+
+  .card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:26px; }
+  .f { margin-bottom:18px; }
+  .f label { display:block; font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:var(--soft); margin-bottom:8px; }
+  .f input.f textarea.f select {
+    width:100%; border:1px solid var(--line); border-radius:10px; background:var(--paper);
+    font-family:'Jost'; font-size:14px; padding:12px 14px; outline:none; color:var(--ink);
+  }
+  .f input:focus.f textarea:focus { border-color:var(--pink); }
+  .f textarea { min-height:90px; resize:vertical; }
+  .f textarea.body { min-height:220px; }
+  .f .sub { font-size:11.5px; color:var(--soft); margin-top:6px; line-height:1.5; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
+  .status { font-size:12.5px; color:var(--pink); margin-top:14px; min-height:18px; }
+  @media (max-width:900px) { .wrap { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-in">
+    <a class="brand-cms" href="index.html">esthemax <span>Beauty Resource CMS</span></a>
+    <div class="grow"></div>
+    <a class="btn ghost" href="beauty-resource.html" target="_blank">Preview Site ↗</a>
+    <button class="btn pink" id="exportBtn">Publish, Download posts.js</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="col-list">
+    <h2>Posts</h2>
+    <div class="hint">
+      <b>How publishing works:</b><br>
+      1. Write or edit posts here, they save instantly to <b>this browser</b>, so "Preview Site" shows them right away.<br>
+      2. When happy, press <b>Publish, Download posts.js</b> and replace the file at <b>assets/data/posts.js</b> in the website folder with the downloaded one. That makes the posts live for everyone.<br><br>
+      <b>PDFs</b> (e.g. catalogs): copy the PDF into the <b>assets/pdfs/</b> folder, then type its path below, visitors get a download button and an inline preview.<br>
+      <b>Videos:</b> paste any YouTube link, it embeds automatically.
+    </div>
+    <button class="btn pink" id="newBtn" style="margin-bottom:14px;">+ New Post</button>
+    <div class="plist" id="plist"></div>
+  </div>
+
+  <div class="col-form">
+    <h2 id="formTitle">New Post</h2>
+    <div class="card">
+      <div class="row2">
+        <div class="f">
+          <label for="c-title">Title</label>
+          <input id="c-title" type="text" placeholder="e.g. The Salmon DNA Ritual">
+        </div>
+        <div class="f">
+          <label for="c-tag">Tag</label>
+          <select id="c-tag">
+            <option>Education</option>
+            <option>Video</option>
+            <option>Catalog</option>
+            <option>News</option>
+            <option>Treatment</option>
+          </select>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="f">
+          <label for="c-date">Date</label>
+          <input id="c-date" type="date">
+        </div>
+        <div class="f">
+          <label for="c-cover">Cover Image (path or URL)</label>
+          <input id="c-cover" type="text" placeholder="assets/banners/hero-jelly.jpg" list="coverList">
+          <datalist id="coverList">
+            <option value="assets/banners/hero-jelly.jpg">
+            <option value="assets/banners/menu-jars.jpg">
+            <option value="assets/banners/why-hydrojelly.jpg">
+            <option value="assets/banners/hero-bg-salmon.jpg">
+            <option value="assets/banners/hero-bg-matcha.jpg">
+          </datalist>
+        </div>
+      </div>
+      <div class="f">
+        <label for="c-excerpt">Excerpt (shown on the listing card)</label>
+        <textarea id="c-excerpt" placeholder="One or two sentences shown on the Beauty Resource page."></textarea>
+      </div>
+      <div class="f">
+        <label for="c-body">Body</label>
+        <textarea id="c-body" class="body" placeholder="Write the post here. Plain paragraphs are fine, leave an empty line between paragraphs. You can also use HTML like <h3>Heading</h3> and <a href=&quot;...&quot;>links</a>."></textarea>
+        <div class="sub">Empty lines become new paragraphs automatically. HTML is allowed for headings, links and lists.</div>
+      </div>
+      <div class="row2">
+        <div class="f">
+          <label for="c-youtube">YouTube Link (optional)</label>
+          <input id="c-youtube" type="text" placeholder="https://www.youtube.com/watch?v=…">
+        </div>
+        <div class="f">
+          <label for="c-pdf">PDF Path (optional)</label>
+          <input id="c-pdf" type="text" placeholder="assets/pdfs/my-catalog.pdf">
+          <div class="sub">Put the file in assets/pdfs/ first, then type its path here.</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn pink" id="saveBtn">Save Post</button>
+        <button class="btn ghost" id="viewBtn">View This Post ↗</button>
+        <button class="btn danger" id="delBtn">Delete</button>
+      </div>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/data/posts.js"></script>
+<script>
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  let posts = null;
+  try { posts = JSON.parse(localStorage.getItem('em_posts')); } catch (e) {}
+  if (!Array.isArray(posts)) posts = (window.EM_POSTS || []).map(p => Object.assign({}, p));
+  let currentId = null;
+
+  const slug = t => String(t).toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || ('post-' + Date.now());
+
+  function persist() { localStorage.setItem('em_posts', JSON.stringify(posts)); }
+
+  function renderList() {
+    $('#plist').innerHTML = posts.slice().sort((a,b) => (b.date||'').localeCompare(a.date||'')).map(p => `
+      <div class="pitem${p.id === currentId ? ' sel' : ''}" data-id="${esc(p.id)}">
+        <h4>${esc(p.title) || '(untitled)'}</h4>
+        <div class="sub"><span>${esc(p.date || '')}</span><span>${esc(p.tag || '')}</span>
+          ${p.youtube ? '<span class="badge">▶ video</span>' : ''}${p.pdf ? '<span class="badge">⤓ pdf</span>' : ''}</div>
+      </div>`).join('') || '<p style="color:var(--soft); font-size:13px;">No posts yet.</p>';
+    document.querySelectorAll('.pitem').forEach(el => el.onclick = () => load(el.dataset.id));
+  }
+
+  function load(id) {
+    const p = posts.find(x => x.id === id);
+    if (!p) return;
+    currentId = id;
+    $('#formTitle').textContent = 'Edit: ' + (p.title || '(untitled)');
+    $('#c-title').value = p.title || '';
+    $('#c-tag').value = p.tag || 'Education';
+    $('#c-date').value = p.date || '';
+    $('#c-cover').value = p.cover || '';
+    $('#c-excerpt').value = p.excerpt || '';
+    $('#c-body').value = (p.body || '').replace(/<\/p>\s*<p>/g, '\n\n').replace(/^<p>|<\/p>$/g, '');
+    $('#c-youtube').value = p.youtube || '';
+    $('#c-pdf').value = p.pdf || '';
+    renderList();
+    $('#status').textContent = '';
+  }
+
+  function clearForm() {
+    currentId = null;
+    $('#formTitle').textContent = 'New Post';
+    ['c-title','c-cover','c-excerpt','c-body','c-youtube','c-pdf'].forEach(id => $('#' + id).value = '');
+    $('#c-tag').value = 'Education';
+    $('#c-date').value = new Date().toISOString().slice(0, 10);
+    renderList();
+  }
+
+  function bodyToHtml(raw) {
+    raw = raw.trim();
+    if (!raw) return '';
+    if (/<p[\s>]/i.test(raw)) return raw; // already full HTML
+    return raw.split(/\n\s*\n/).map(part => {
+      part = part.trim().replace(/\n/g, '<br>');
+      return /^<(h\d|ul|ol|blockquote|div|img|table)/i.test(part) ? part : '<p>' + part + '</p>';
+    }).join('');
+  }
+
+  $('#saveBtn').onclick = () => {
+    const title = $('#c-title').value.trim();
+    if (!title) { $('#status').textContent = 'Give the post a title first.'; return; }
+    const p = {
+      id: currentId || slug(title),
+      title,
+      date: $('#c-date').value || new Date().toISOString().slice(0, 10),
+      tag: $('#c-tag').value,
+      cover: $('#c-cover').value.trim(),
+      excerpt: $('#c-excerpt').value.trim(),
+      body: bodyToHtml($('#c-body').value),
+      youtube: $('#c-youtube').value.trim(),
+      pdf: $('#c-pdf').value.trim()
+    };
+    const i = posts.findIndex(x => x.id === p.id);
+    i > -1 ? posts[i] = p : posts.push(p);
+    currentId = p.id;
+    persist();
+    renderList();
+    $('#formTitle').textContent = 'Edit: ' + p.title;
+    $('#status').textContent = 'Saved ✓, visible in Preview Site now. Press Publish when ready to go live.';
+  };
+
+  $('#delBtn').onclick = () => {
+    if (!currentId) { clearForm(); return; }
+    if (!confirm('Delete this post?')) return;
+    posts = posts.filter(x => x.id !== currentId);
+    persist();
+    clearForm();
+    $('#status').textContent = 'Deleted.';
+  };
+
+  $('#viewBtn').onclick = () => {
+    if (!currentId) { $('#status').textContent = 'Save the post first.'; return; }
+    window.open('beauty-resource.html?id=' + encodeURIComponent(currentId), '_blank');
+  };
+
+  $('#newBtn').onclick = clearForm;
+
+  $('#exportBtn').onclick = () => {
+    const header = "/* Beauty Resource posts.\\n   Exported from cms.html, place this file at assets/data/posts.js to publish. */\\n";
+    const file = header.replace(/\\\\n/g, '\n') + 'window.EM_POSTS = ' + JSON.stringify(posts, null, 1) + ';\n';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([file], { type: 'text/javascript' }));
+    a.download = 'posts.js';
+    a.click();
+    $('#status').textContent = 'posts.js downloaded, replace assets/data/posts.js with it to publish for everyone.';
+  };
+
+  clearForm();
+  renderList();
+</script>
+</body>
+</html>
