@@ -380,3 +380,11 @@ footer.footer img[src*="logo-esthemax"] {
 }
 .strip:has(.jelly-grid) > * { position: relative; z-index: 1; }
 .strip:has(.jelly-grid) .jelly-media { background: rgba(239, 236, 229, 0.82); backdrop-filter: blur(2px); }
+
+/* ---------- footer: link columns sit together, flush right on desktop ---------- */
+@media (min-width: 901px) {
+  .footer-grid {
+    grid-template-columns: 1fr max-content max-content;
+    column-gap: 68px;
+  }
+}

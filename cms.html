@@ -3,254 +3,422 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Beauty Resource CMS | Esthemax</title>
+<meta name="robots" content="noindex, nofollow">
+<title>Esthemax CMS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root { --paper:#FDFBF8; --panel:#F8E7ED; --ink:#221A1E; --soft:#6E5B63; --line:#EDDCE3; --pink:#D6247A; }
+  :root { --paper:#FCFBF8; --panel:#F4EFE9; --ink:#26211D; --soft:#7C7268; --line:#E8E2D7; --pink:#D6247A; --pink-deep:#A61E60; }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'Jost',sans-serif; background:var(--paper); color:var(--ink); -webkit-font-smoothing:antialiased; }
   a { color:inherit; }
+
+  /* ---------- login gate ---------- */
+  .gate { position:fixed; inset:0; z-index:100; background:var(--pink-deep); display:flex; align-items:center; justify-content:center; padding:24px; }
+  .gate-card { background:#fff; border-radius:18px; padding:44px 40px; width:min(420px,100%); text-align:center; box-shadow:0 24px 60px rgba(0,0,0,.22); }
+  .gate-card h1 { font-family:'Playfair Display',serif; font-weight:400; font-size:27px; margin-bottom:8px; }
+  .gate-card p { font-size:13px; color:var(--soft); margin-bottom:26px; line-height:1.6; }
+  .gate-card input { width:100%; border:1px solid var(--line); border-radius:9px; background:var(--paper); font-family:'Jost'; font-size:15px; padding:14px 16px; outline:none; text-align:center; letter-spacing:.05em; }
+  .gate-card input:focus { border-color:var(--pink); }
+  .gate-card button { width:100%; margin-top:14px; border:none; cursor:pointer; background:var(--pink); color:#fff; font-family:'Jost'; font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; padding:15px; border-radius:9px; }
+  .gate-err { color:#C0392B; font-size:13px; margin-top:14px; min-height:18px; }
+
+  /* ---------- shell ---------- */
   .top { position:sticky; top:0; z-index:10; background:#fff; border-bottom:1px solid var(--line); }
-  .top-in { max-width:1200px; margin:0 auto; padding:16px 30px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-  .brand-cms { font-weight:600; font-size:20px; color:var(--pink); text-decoration:none; }
-  .brand-cms span { font-weight:400; color:var(--soft); font-size:13px; margin-left:10px; }
-  .top-in .grow { flex:1; }
-  .btn { font-family:'Jost'; font-size:11.5px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; border:none; cursor:pointer; border-radius:999px; padding:12px 22px; text-decoration:none; display:inline-block; }
+  .top-in { max-width:1280px; margin:0 auto; padding:14px 30px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .brand-cms { font-weight:600; font-size:19px; color:var(--pink); text-decoration:none; }
+  .brand-cms span { font-weight:400; color:var(--soft); font-size:13px; margin-left:9px; }
+  .grow { flex:1; }
+  .btn { font-family:'Jost'; font-size:11.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; border:none; cursor:pointer; border-radius:999px; padding:12px 22px; text-decoration:none; display:inline-block; white-space:nowrap; }
   .btn.pink { background:var(--pink); color:#fff; }
   .btn.ghost { background:transparent; border:1px solid var(--ink); color:var(--ink); }
-  .btn.tiny { padding:8px 16px; font-size:10.5px; }
   .btn.danger { background:transparent; border:1px solid #C0392B; color:#C0392B; }
+  .btn.tiny { padding:9px 16px; font-size:10.5px; }
 
-  .wrap { max-width:1200px; margin:0 auto; padding:34px 30px 90px; display:grid; grid-template-columns:340px 1fr; gap:30px; }
-  .col-list h2.col-form h2 { font-family:'Playfair Display',serif; font-weight:500; font-size:22px; margin-bottom:16px; }
-  .hint { background:var(--panel); border-radius:14px; padding:16px 18px; font-size:12.5px; line-height:1.65; color:var(--soft); margin-bottom:20px; }
+  .tabs { max-width:1280px; margin:0 auto; padding:22px 30px 0; display:flex; gap:10px; flex-wrap:wrap; }
+  .tab { font-family:'Jost'; font-size:11.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; border:1px solid var(--line); background:transparent; border-radius:999px; padding:11px 24px; cursor:pointer; color:var(--ink); }
+  .tab.on { background:var(--ink); border-color:var(--ink); color:#fff; }
+
+  .wrap { max-width:1280px; margin:0 auto; padding:26px 30px 90px; display:grid; grid-template-columns:330px 1fr; gap:26px; align-items:start; }
+  .hint { background:var(--panel); border-radius:13px; padding:16px 18px; font-size:12.5px; line-height:1.65; color:var(--soft); margin-bottom:18px; }
   .hint b { color:var(--ink); }
-  .plist { display:flex; flex-direction:column; gap:10px; }
-  .pitem { background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px 16px; cursor:pointer; transition:border-color 0.2s; }
-  .pitem:hover.pitem.sel { border-color:var(--pink); }
-  .pitem h4 { font-size:14px; margin-bottom:4px; }
-  .pitem .sub { font-size:11.5px; color:var(--soft); display:flex; gap:10px; }
-  .pitem .badge { color:var(--pink); font-weight:600; }
+  h2.col-title { font-family:'Playfair Display',serif; font-weight:500; font-size:21px; margin-bottom:14px; }
 
-  .card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:26px; }
-  .f { margin-bottom:18px; }
-  .f label { display:block; font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:var(--soft); margin-bottom:8px; }
-  .f input.f textarea.f select {
-    width:100%; border:1px solid var(--line); border-radius:10px; background:var(--paper);
+  .search { width:100%; border:1px solid var(--line); border-radius:9px; background:#fff; font-family:'Jost'; font-size:13.5px; padding:11px 14px; outline:none; margin-bottom:12px; }
+  .search:focus { border-color:var(--pink); }
+  .plist { display:flex; flex-direction:column; gap:8px; max-height:70vh; overflow-y:auto; padding-right:4px; }
+  .pitem { background:#fff; border:1px solid var(--line); border-radius:11px; padding:12px 14px; cursor:pointer; transition:border-color .2s; display:flex; gap:11px; align-items:center; }
+  .pitem:hover, .pitem.sel { border-color:var(--pink); }
+  .pitem img { width:38px; height:38px; object-fit:contain; background:var(--panel); border-radius:7px; flex:0 0 auto; }
+  .pitem h4 { font-size:13.5px; margin-bottom:3px; line-height:1.3; }
+  .pitem .sub { font-size:11px; color:var(--soft); display:flex; gap:9px; flex-wrap:wrap; }
+
+  .card { background:#fff; border:1px solid var(--line); border-radius:15px; padding:26px; }
+  .f { margin-bottom:17px; }
+  .f label { display:block; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--soft); margin-bottom:7px; }
+  .f input, .f textarea, .f select {
+    width:100%; border:1px solid var(--line); border-radius:9px; background:var(--paper);
     font-family:'Jost'; font-size:14px; padding:12px 14px; outline:none; color:var(--ink);
   }
-  .f input:focus.f textarea:focus { border-color:var(--pink); }
-  .f textarea { min-height:90px; resize:vertical; }
-  .f textarea.body { min-height:220px; }
+  .f input:focus, .f textarea:focus, .f select:focus { border-color:var(--pink); }
+  .f textarea { min-height:88px; resize:vertical; }
+  .f textarea.tall { min-height:150px; }
   .f .sub { font-size:11.5px; color:var(--soft); margin-top:6px; line-height:1.5; }
-  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
-  .status { font-size:12.5px; color:var(--pink); margin-top:14px; min-height:18px; }
-  @media (max-width:900px) { .wrap { grid-template-columns:1fr; } }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+  .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; }
+  .chip { font-size:11px; letter-spacing:.1em; text-transform:uppercase; border:1px solid var(--line); border-radius:999px; padding:8px 14px; cursor:pointer; user-select:none; }
+  .chip.on { background:var(--pink); border-color:var(--pink); color:#fff; }
+  .preview { display:flex; gap:14px; align-items:center; background:var(--panel); border-radius:11px; padding:12px; margin-bottom:17px; }
+  .preview img { width:64px; height:64px; object-fit:contain; background:#fff; border-radius:8px; }
+  .preview .pv-note { font-size:12px; color:var(--soft); line-height:1.5; }
+  .actions { display:flex; gap:11px; flex-wrap:wrap; margin-top:20px; padding-top:18px; border-top:1px solid var(--line); }
+  .status { font-size:12.5px; color:var(--pink); margin-top:13px; min-height:18px; }
+  .dot-in { display:flex; gap:10px; align-items:center; }
+  .dot-in input[type=color] { width:46px; height:44px; padding:3px; cursor:pointer; }
+  @media (max-width:940px) { .wrap { grid-template-columns:1fr; } .plist { max-height:none; } }
 </style>
 </head>
 <body>
 
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <h1>Esthemax CMS</h1>
+    <p>Enter the passphrase to manage products and blog posts.</p>
+    <input id="pw" type="password" placeholder="Passphrase" autocomplete="current-password">
+    <button id="pwBtn">Enter</button>
+    <div class="gate-err" id="pwErr"></div>
+  </div>
+</div>
+
 <div class="top">
   <div class="top-in">
-    <a class="brand-cms" href="index.html">esthemax <span>Beauty Resource CMS</span></a>
+    <a class="brand-cms" href="index.html">esthemax <span>Content Manager</span></a>
     <div class="grow"></div>
-    <a class="btn ghost" href="beauty-resource.html" target="_blank">Preview Site ↗</a>
-    <button class="btn pink" id="exportBtn">Publish, Download posts.js</button>
+    <a class="btn ghost" href="beauty-resource.html" target="_blank">Preview Blog</a>
+    <a class="btn ghost" href="shop.html" target="_blank">Preview Shop</a>
+    <button class="btn pink" id="publishBtn">Publish Changes</button>
+    <button class="btn ghost tiny" id="logoutBtn">Lock</button>
   </div>
+</div>
+
+<div class="tabs">
+  <button class="tab on" data-tab="posts">Blog Posts</button>
+  <button class="tab" data-tab="masks">Hydrojelly Masks</button>
+  <button class="tab" data-tab="skincare">Skincare</button>
+  <button class="tab" data-tab="sets">Sets</button>
 </div>
 
 <div class="wrap">
   <div class="col-list">
-    <h2>Posts</h2>
-    <div class="hint">
-      <b>How publishing works:</b><br>
-      1. Write or edit posts here, they save instantly to <b>this browser</b>, so "Preview Site" shows them right away.<br>
-      2. When happy, press <b>Publish, Download posts.js</b> and replace the file at <b>assets/data/posts.js</b> in the website folder with the downloaded one. That makes the posts live for everyone.<br><br>
-      <b>PDFs</b> (e.g. catalogs): copy the PDF into the <b>assets/pdfs/</b> folder, then type its path below, visitors get a download button and an inline preview.<br>
-      <b>Videos:</b> paste any YouTube link, it embeds automatically.
-    </div>
-    <button class="btn pink" id="newBtn" style="margin-bottom:14px;">+ New Post</button>
+    <h2 class="col-title" id="listTitle">Blog Posts</h2>
+    <div class="hint" id="hint"></div>
+    <button class="btn pink" id="newBtn" style="margin-bottom:12px; width:100%;">+ New</button>
+    <input class="search" id="search" placeholder="Search...">
     <div class="plist" id="plist"></div>
   </div>
-
   <div class="col-form">
-    <h2 id="formTitle">New Post</h2>
-    <div class="card">
-      <div class="row2">
-        <div class="f">
-          <label for="c-title">Title</label>
-          <input id="c-title" type="text" placeholder="e.g. The Salmon DNA Ritual">
-        </div>
-        <div class="f">
-          <label for="c-tag">Tag</label>
-          <select id="c-tag">
-            <option>Education</option>
-            <option>Video</option>
-            <option>Catalog</option>
-            <option>News</option>
-            <option>Treatment</option>
-          </select>
-        </div>
-      </div>
-      <div class="row2">
-        <div class="f">
-          <label for="c-date">Date</label>
-          <input id="c-date" type="date">
-        </div>
-        <div class="f">
-          <label for="c-cover">Cover Image (path or URL)</label>
-          <input id="c-cover" type="text" placeholder="assets/banners/hero-jelly.jpg" list="coverList">
-          <datalist id="coverList">
-            <option value="assets/banners/hero-jelly.jpg">
-            <option value="assets/banners/menu-jars.jpg">
-            <option value="assets/banners/why-hydrojelly.jpg">
-            <option value="assets/banners/hero-bg-salmon.jpg">
-            <option value="assets/banners/hero-bg-matcha.jpg">
-          </datalist>
-        </div>
-      </div>
-      <div class="f">
-        <label for="c-excerpt">Excerpt (shown on the listing card)</label>
-        <textarea id="c-excerpt" placeholder="One or two sentences shown on the Beauty Resource page."></textarea>
-      </div>
-      <div class="f">
-        <label for="c-body">Body</label>
-        <textarea id="c-body" class="body" placeholder="Write the post here. Plain paragraphs are fine, leave an empty line between paragraphs. You can also use HTML like <h3>Heading</h3> and <a href=&quot;...&quot;>links</a>."></textarea>
-        <div class="sub">Empty lines become new paragraphs automatically. HTML is allowed for headings, links and lists.</div>
-      </div>
-      <div class="row2">
-        <div class="f">
-          <label for="c-youtube">YouTube Link (optional)</label>
-          <input id="c-youtube" type="text" placeholder="https://www.youtube.com/watch?v=…">
-        </div>
-        <div class="f">
-          <label for="c-pdf">PDF Path (optional)</label>
-          <input id="c-pdf" type="text" placeholder="assets/pdfs/my-catalog.pdf">
-          <div class="sub">Put the file in assets/pdfs/ first, then type its path here.</div>
-        </div>
-      </div>
-      <div class="actions">
-        <button class="btn pink" id="saveBtn">Save Post</button>
-        <button class="btn ghost" id="viewBtn">View This Post ↗</button>
-        <button class="btn danger" id="delBtn">Delete</button>
-      </div>
-      <div class="status" id="status"></div>
-    </div>
+    <h2 class="col-title" id="formTitle">New</h2>
+    <div class="card" id="formCard"></div>
   </div>
 </div>
 
 <script src="assets/data/posts.js"></script>
+<script src="assets/data/catalog.js"></script>
 <script>
-  const $ = s => document.querySelector(s);
-  const esc = s => String(s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  let posts = null;
-  try { posts = JSON.parse(localStorage.getItem('em_posts')); } catch (e) {}
-  if (!Array.isArray(posts)) posts = (window.EM_POSTS || []).map(p => Object.assign({}, p));
-  let currentId = null;
+/* Soft login gate. This is a static site, so the check runs in the browser:
+   it keeps the CMS private from ordinary visitors, but it is not a substitute
+   for server-side auth. For real protection, host this page behind Netlify or
+   Vercel password protection. */
+const PW_HASH = '3d8796b42ff6f7cfe91fc8c05a0132796b1d1affc2b00c19199d23db1e3486ff';
 
-  const slug = t => String(t).toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || ('post-' + Date.now());
-
-  function persist() { localStorage.setItem('em_posts', JSON.stringify(posts)); }
-
-  function renderList() {
-    $('#plist').innerHTML = posts.slice().sort((a,b) => (b.date||'').localeCompare(a.date||'')).map(p => `
-      <div class="pitem${p.id === currentId ? ' sel' : ''}" data-id="${esc(p.id)}">
-        <h4>${esc(p.title) || '(untitled)'}</h4>
-        <div class="sub"><span>${esc(p.date || '')}</span><span>${esc(p.tag || '')}</span>
-          ${p.youtube ? '<span class="badge">▶ video</span>' : ''}${p.pdf ? '<span class="badge">⤓ pdf</span>' : ''}</div>
-      </div>`).join('') || '<p style="color:var(--soft); font-size:13px;">No posts yet.</p>';
-    document.querySelectorAll('.pitem').forEach(el => el.onclick = () => load(el.dataset.id));
+async function sha256(s) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+async function tryLogin() {
+  if (await sha256(document.getElementById('pw').value) === PW_HASH) {
+    sessionStorage.setItem('em_cms_ok', '1');
+    document.getElementById('gate').style.display = 'none';
+    boot();
+  } else {
+    document.getElementById('pwErr').textContent = 'Incorrect passphrase.';
+    document.getElementById('pw').value = '';
   }
+}
+document.getElementById('pwBtn').onclick = tryLogin;
+document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+document.getElementById('logoutBtn').onclick = () => { sessionStorage.removeItem('em_cms_ok'); location.reload(); };
 
-  function load(id) {
-    const p = posts.find(x => x.id === id);
-    if (!p) return;
-    currentId = id;
-    $('#formTitle').textContent = 'Edit: ' + (p.title || '(untitled)');
-    $('#c-title').value = p.title || '';
-    $('#c-tag').value = p.tag || 'Education';
-    $('#c-date').value = p.date || '';
-    $('#c-cover').value = p.cover || '';
-    $('#c-excerpt').value = p.excerpt || '';
-    $('#c-body').value = (p.body || '').replace(/<\/p>\s*<p>/g, '\n\n').replace(/^<p>|<\/p>$/g, '');
-    $('#c-youtube').value = p.youtube || '';
-    $('#c-pdf').value = p.pdf || '';
-    renderList();
-    $('#status').textContent = '';
+const $ = s => document.querySelector(s);
+const esc = s => String(s === undefined || s === null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const slugify = t => String(t).toLowerCase().replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60);
+const clone = o => JSON.parse(JSON.stringify(o));
+const safeParse = s => { try { return JSON.parse(s); } catch (e) { return null; } };
+
+let DATA = { posts: [], masks: [], skincare: [], sets: [], contact: null };
+let TAB = 'posts';
+let currentId = null;
+
+function loadData() {
+  const draftPosts = safeParse(localStorage.getItem('em_posts'));
+  DATA.posts = Array.isArray(draftPosts) && draftPosts.length ? draftPosts : clone(window.EM_POSTS || []);
+  const base = window.EM || { masks: [], skincare: [], sets: [], contact: null };
+  const draftCat = safeParse(localStorage.getItem('em_catalog'));
+  const cat = draftCat && draftCat.masks ? draftCat : clone(base);
+  DATA.masks = cat.masks || [];
+  DATA.skincare = cat.skincare || [];
+  DATA.sets = cat.sets || [];
+  DATA.contact = cat.contact || base.contact;
+}
+function persist() {
+  localStorage.setItem('em_posts', JSON.stringify(DATA.posts));
+  localStorage.setItem('em_catalog', JSON.stringify({
+    masks: DATA.masks, sets: DATA.sets, skincare: DATA.skincare, contact: DATA.contact
+  }));
+}
+
+const CATS = ['hydrate','brighten','clarify','calm','firm'];
+const SKIN_CATS = ['Serum','Innovation Cream','Cleanser','Enzyme Powder','Toner & Emulsion','Massage Cream','Body Cream & Gel','Sun'];
+const TAGS = ['Education','Video','Catalog','News','Treatment'];
+
+const CFG = {
+  posts: {
+    title: 'Blog Posts', idKey: 'id',
+    hint: '<b>Blog posts</b> appear on the Beauty Resource page.<br>Paste a YouTube link to embed a video. For a PDF, put the file in <b>assets/pdfs/</b> then type its path.',
+    label: p => p.title,
+    sub: p => [p.date, p.tag, p.youtube ? 'video' : '', p.pdf ? 'pdf' : ''],
+    img: p => p.cover,
+    blank: () => ({ id:'', title:'', date:new Date().toISOString().slice(0,10), tag:'Education', cover:'', excerpt:'', body:'', youtube:'', pdf:'' })
+  },
+  masks: {
+    title: 'Hydrojelly Masks', idKey: 'code',
+    hint: '<b>Hydrojelly masks</b> show on the collection page and each gets its own product page.<br>Put jar photos in <b>assets/products/us/</b> named by code, for example <b>809.jpg</b>.',
+    label: p => p.name,
+    sub: p => ['No. ' + p.code, (p.cats || []).join(', ')],
+    img: p => p.img,
+    blank: () => ({ code:'', name:'', dot:'#D6247A', tags:'', cats:[], img:'', desc:'', concerns:'', ingredients:'' })
+  },
+  skincare: {
+    title: 'Skincare', idKey: 'slug',
+    hint: '<b>Skincare products</b> appear on their category page (serums, creams, cleansers, massage).<br>Put photos in <b>assets/products/skincare/</b>.',
+    label: p => p.name,
+    sub: p => [p.category, p.size],
+    img: p => p.img,
+    blank: () => ({ slug:'', name:'', code:'', category:'Serum', size:'', desc:'', concerns:'', ingredients:'', img:'' })
+  },
+  sets: {
+    title: 'Sets', idKey: 'code',
+    hint: '<b>Sets and sample packs</b> show at the bottom of the Hydrojelly collection page.',
+    label: p => p.name,
+    sub: p => ['No. ' + p.code],
+    img: p => p.img,
+    blank: () => ({ code:'', name:'', img:'', desc:'' })
   }
+};
 
-  function clearForm() {
-    currentId = null;
-    $('#formTitle').textContent = 'New Post';
-    ['c-title','c-cover','c-excerpt','c-body','c-youtube','c-pdf'].forEach(id => $('#' + id).value = '');
-    $('#c-tag').value = 'Education';
-    $('#c-date').value = new Date().toISOString().slice(0, 10);
-    renderList();
+function renderList() {
+  const cfg = CFG[TAB];
+  const q = ($('#search').value || '').toLowerCase();
+  const items = DATA[TAB].filter(p => !q || JSON.stringify(p).toLowerCase().includes(q));
+  $('#listTitle').textContent = cfg.title;
+  $('#hint').innerHTML = cfg.hint;
+  $('#plist').innerHTML = items.map(p => {
+    const id = p[cfg.idKey];
+    const img = cfg.img(p);
+    return '<div class="pitem' + (String(id) === String(currentId) ? ' sel' : '') + '" data-id="' + esc(id) + '">'
+      + '<img src="' + esc(img || '') + '" alt="" onerror="this.style.visibility=\'hidden\'">'
+      + '<div><h4>' + (esc(cfg.label(p)) || '(untitled)') + '</h4>'
+      + '<div class="sub">' + cfg.sub(p).filter(Boolean).map(s => '<span>' + esc(s) + '</span>').join('') + '</div></div></div>';
+  }).join('') || '<p style="color:var(--soft); font-size:13px; padding:8px 2px;">Nothing here yet.</p>';
+  document.querySelectorAll('.pitem').forEach(el => el.onclick = () => load(el.dataset.id));
+}
+
+function formHtml(p) {
+  if (TAB === 'posts') return ''
+    + '<div class="row2">'
+    + '<div class="f"><label>Title</label><input id="c-title" value="' + esc(p.title) + '"></div>'
+    + '<div class="f"><label>Tag</label><select id="c-tag">' + TAGS.map(t => '<option' + (t === p.tag ? ' selected' : '') + '>' + t + '</option>').join('') + '</select></div></div>'
+    + '<div class="row2">'
+    + '<div class="f"><label>Date</label><input id="c-date" type="date" value="' + esc(p.date) + '"></div>'
+    + '<div class="f"><label>Cover image path</label><input id="c-cover" value="' + esc(p.cover) + '" placeholder="assets/banners/hero-jelly.jpg"></div></div>'
+    + '<div class="f"><label>Excerpt (shown on the card)</label><textarea id="c-excerpt">' + esc(p.excerpt) + '</textarea></div>'
+    + '<div class="f"><label>Body</label><textarea id="c-body" class="tall">' + esc(bodyToText(p.body)) + '</textarea>'
+    + '<div class="sub">Leave a blank line between paragraphs. HTML such as &lt;h3&gt; and links is allowed.</div></div>'
+    + '<div class="row2">'
+    + '<div class="f"><label>YouTube link (optional)</label><input id="c-youtube" value="' + esc(p.youtube) + '" placeholder="https://youtu.be/..."></div>'
+    + '<div class="f"><label>PDF path (optional)</label><input id="c-pdf" value="' + esc(p.pdf) + '" placeholder="assets/pdfs/catalog.pdf"></div></div>';
+
+  if (TAB === 'masks') return ''
+    + '<div class="row3">'
+    + '<div class="f"><label>Name</label><input id="c-name" value="' + esc(p.name) + '"></div>'
+    + '<div class="f"><label>Product code</label><input id="c-code" value="' + esc(p.code) + '" placeholder="809"></div>'
+    + '<div class="f"><label>Dot colour</label><div class="dot-in"><input id="c-dot" type="color" value="' + esc(p.dot || '#D6247A') + '"><input id="c-dot-x" value="' + esc(p.dot || '#D6247A') + '"></div></div></div>'
+    + '<div class="row2">'
+    + '<div class="f"><label>Image path</label><input id="c-img" value="' + esc(p.img) + '" placeholder="assets/products/us/809.jpg"></div>'
+    + '<div class="f"><label>Benefit pair</label><input id="c-tags" value="' + esc(p.tags) + '" placeholder="Calm &middot; Refresh"></div></div>'
+    + '<div class="f"><label>Filter categories</label><div class="chips" id="c-cats">'
+    + CATS.map(c => '<span class="chip' + ((p.cats || []).includes(c) ? ' on' : '') + '" data-c="' + c + '">' + c + '</span>').join('') + '</div></div>'
+    + '<div class="f"><label>Skin concerns</label><input id="c-concerns" value="' + esc(p.concerns) + '" placeholder="Dryness, Dullness, Fine Lines."></div>'
+    + '<div class="f"><label>Description</label><textarea id="c-desc" class="tall">' + esc(p.desc) + '</textarea></div>'
+    + '<div class="f"><label>Ingredients</label><textarea id="c-ingredients" class="tall">' + esc(p.ingredients) + '</textarea></div>';
+
+  if (TAB === 'skincare') return ''
+    + '<div class="row3">'
+    + '<div class="f"><label>Name</label><input id="c-name" value="' + esc(p.name) + '"></div>'
+    + '<div class="f"><label>Product code</label><input id="c-code" value="' + esc(p.code) + '"></div>'
+    + '<div class="f"><label>Category</label><select id="c-category">' + SKIN_CATS.map(c => '<option' + (c === p.category ? ' selected' : '') + '>' + c + '</option>').join('') + '</select></div></div>'
+    + '<div class="row2">'
+    + '<div class="f"><label>Image path</label><input id="c-img" value="' + esc(p.img) + '" placeholder="assets/products/skincare/name.jpg"></div>'
+    + '<div class="f"><label>Size</label><input id="c-size" value="' + esc(p.size) + '" placeholder="3.38 FL.OZ / 100 ML"></div></div>'
+    + '<div class="f"><label>Skin concerns</label><input id="c-concerns" value="' + esc(p.concerns) + '"></div>'
+    + '<div class="f"><label>Description</label><textarea id="c-desc" class="tall">' + esc(p.desc) + '</textarea></div>'
+    + '<div class="f"><label>Ingredients</label><textarea id="c-ingredients" class="tall">' + esc(p.ingredients) + '</textarea></div>';
+
+  return ''
+    + '<div class="row2">'
+    + '<div class="f"><label>Name</label><input id="c-name" value="' + esc(p.name) + '"></div>'
+    + '<div class="f"><label>Code</label><input id="c-code" value="' + esc(p.code) + '"></div></div>'
+    + '<div class="f"><label>Image path</label><input id="c-img" value="' + esc(p.img) + '"></div>'
+    + '<div class="f"><label>Description</label><textarea id="c-desc" class="tall">' + esc(p.desc) + '</textarea></div>';
+}
+
+function renderForm(p) {
+  $('#formCard').innerHTML =
+    '<div class="preview"><img id="pv-img" src="' + esc(CFG[TAB].img(p) || '') + '" alt="" onerror="this.style.visibility=\'hidden\'">'
+    + '<div class="pv-note">Image preview. Paths are relative to the website folder, for example <b>assets/products/us/809.jpg</b>.</div></div>'
+    + formHtml(p)
+    + '<div class="actions"><button class="btn pink" id="saveBtn">Save</button>'
+    + '<button class="btn ghost" id="viewBtn">View on site</button>'
+    + '<button class="btn danger" id="delBtn">Delete</button></div><div class="status" id="status"></div>';
+
+  $('#saveBtn').onclick = save;
+  $('#delBtn').onclick = del;
+  $('#viewBtn').onclick = viewOnSite;
+
+  const chips = $('#c-cats');
+  if (chips) chips.querySelectorAll('.chip').forEach(c => c.onclick = () => c.classList.toggle('on'));
+  const dot = $('#c-dot'), dotx = $('#c-dot-x');
+  if (dot) {
+    dot.oninput = () => dotx.value = dot.value;
+    dotx.oninput = () => { if (/^#[0-9a-f]{6}$/i.test(dotx.value)) dot.value = dotx.value; };
   }
+  const imgIn = $('#c-img') || $('#c-cover');
+  if (imgIn) imgIn.oninput = () => { const pv = $('#pv-img'); pv.src = imgIn.value; pv.style.visibility = 'visible'; };
+}
 
-  function bodyToHtml(raw) {
-    raw = raw.trim();
-    if (!raw) return '';
-    if (/<p[\s>]/i.test(raw)) return raw; // already full HTML
-    return raw.split(/\n\s*\n/).map(part => {
-      part = part.trim().replace(/\n/g, '<br>');
-      return /^<(h\d|ul|ol|blockquote|div|img|table)/i.test(part) ? part : '<p>' + part + '</p>';
-    }).join('');
-  }
+function bodyToText(html) {
+  return String(html || '').replace(/<\/p>\s*<p>/g, '\n\n').replace(/^<p>|<\/p>$/g, '').replace(/<br\s*\/?>/g, '\n');
+}
+function textToBody(raw) {
+  raw = (raw || '').trim();
+  if (!raw) return '';
+  if (/<p[\s>]/i.test(raw)) return raw;
+  return raw.split(/\n\s*\n/).map(part => {
+    part = part.trim().replace(/\n/g, '<br>');
+    return /^<(h\d|ul|ol|blockquote|div|img|table)/i.test(part) ? part : '<p>' + part + '</p>';
+  }).join('');
+}
 
-  $('#saveBtn').onclick = () => {
-    const title = $('#c-title').value.trim();
-    if (!title) { $('#status').textContent = 'Give the post a title first.'; return; }
-    const p = {
-      id: currentId || slug(title),
-      title,
-      date: $('#c-date').value || new Date().toISOString().slice(0, 10),
-      tag: $('#c-tag').value,
-      cover: $('#c-cover').value.trim(),
-      excerpt: $('#c-excerpt').value.trim(),
-      body: bodyToHtml($('#c-body').value),
-      youtube: $('#c-youtube').value.trim(),
-      pdf: $('#c-pdf').value.trim()
-    };
-    const i = posts.findIndex(x => x.id === p.id);
-    i > -1 ? posts[i] = p : posts.push(p);
-    currentId = p.id;
-    persist();
-    renderList();
-    $('#formTitle').textContent = 'Edit: ' + p.title;
-    $('#status').textContent = 'Saved ✓, visible in Preview Site now. Press Publish when ready to go live.';
+function collect() {
+  const v = id => { const el = $('#' + id); return el ? el.value.trim() : ''; };
+  if (TAB === 'posts') return {
+    id: currentId || slugify(v('c-title')) || 'post-' + Date.now(),
+    title: v('c-title'), date: v('c-date') || new Date().toISOString().slice(0, 10),
+    tag: v('c-tag'), cover: v('c-cover'), excerpt: v('c-excerpt'),
+    body: textToBody($('#c-body').value), youtube: v('c-youtube'), pdf: v('c-pdf')
   };
-
-  $('#delBtn').onclick = () => {
-    if (!currentId) { clearForm(); return; }
-    if (!confirm('Delete this post?')) return;
-    posts = posts.filter(x => x.id !== currentId);
-    persist();
-    clearForm();
-    $('#status').textContent = 'Deleted.';
+  if (TAB === 'masks') return {
+    code: v('c-code'), name: v('c-name'), dot: v('c-dot'), tags: v('c-tags'),
+    cats: [].slice.call(document.querySelectorAll('#c-cats .chip.on')).map(c => c.dataset.c),
+    img: v('c-img') || ('assets/products/us/' + v('c-code') + '.jpg'),
+    desc: v('c-desc'), concerns: v('c-concerns'), ingredients: v('c-ingredients')
   };
-
-  $('#viewBtn').onclick = () => {
-    if (!currentId) { $('#status').textContent = 'Save the post first.'; return; }
-    window.open('beauty-resource.html?id=' + encodeURIComponent(currentId), '_blank');
+  if (TAB === 'skincare') return {
+    slug: currentId || slugify(v('c-name')), name: v('c-name'), code: v('c-code'),
+    category: v('c-category'), size: v('c-size'), desc: v('c-desc'),
+    concerns: v('c-concerns'), ingredients: v('c-ingredients'),
+    img: v('c-img') || ('assets/products/skincare/' + slugify(v('c-name')) + '.jpg')
   };
+  return { code: v('c-code'), name: v('c-name'), img: v('c-img'), desc: v('c-desc') };
+}
 
-  $('#newBtn').onclick = clearForm;
-
-  $('#exportBtn').onclick = () => {
-    const header = "/* Beauty Resource posts.\\n   Exported from cms.html, place this file at assets/data/posts.js to publish. */\\n";
-    const file = header.replace(/\\\\n/g, '\n') + 'window.EM_POSTS = ' + JSON.stringify(posts, null, 1) + ';\n';
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([file], { type: 'text/javascript' }));
-    a.download = 'posts.js';
-    a.click();
-    $('#status').textContent = 'posts.js downloaded, replace assets/data/posts.js with it to publish for everyone.';
-  };
-
-  clearForm();
+function save() {
+  const cfg = CFG[TAB];
+  const rec = collect();
+  const id = rec[cfg.idKey];
+  if (!id || !(rec.title || rec.name)) { $('#status').textContent = 'A name/title and code are required.'; return; }
+  const list = DATA[TAB];
+  const i = list.findIndex(x => String(x[cfg.idKey]) === String(id));
+  if (i > -1) { list[i] = rec; } else { list.push(rec); }
+  currentId = id;
+  persist();
   renderList();
+  $('#formTitle').textContent = 'Edit: ' + (rec.title || rec.name);
+  $('#status').textContent = 'Saved. Visible in Preview now. Press Publish Changes when you are ready to go live.';
+}
+
+function del() {
+  const cfg = CFG[TAB];
+  if (!currentId) { newItem(); return; }
+  if (!confirm('Delete this item?')) return;
+  DATA[TAB] = DATA[TAB].filter(x => String(x[cfg.idKey]) !== String(currentId));
+  persist(); newItem(); renderList();
+}
+
+function viewOnSite() {
+  if (!currentId) { $('#status').textContent = 'Save it first.'; return; }
+  const url = TAB === 'posts'
+    ? 'beauty-resource.html?id=' + encodeURIComponent(currentId)
+    : 'product.html?id=' + encodeURIComponent(currentId);
+  window.open(url, '_blank');
+}
+
+function load(id) {
+  const cfg = CFG[TAB];
+  const p = DATA[TAB].find(x => String(x[cfg.idKey]) === String(id));
+  if (!p) return;
+  currentId = id;
+  $('#formTitle').textContent = 'Edit: ' + (p.title || p.name);
+  renderForm(p);
+  renderList();
+}
+
+function newItem() {
+  currentId = null;
+  $('#formTitle').textContent = 'New ' + CFG[TAB].title.replace(/s$/, '');
+  renderForm(CFG[TAB].blank());
+  renderList();
+}
+
+function download(name, text) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/javascript' }));
+  a.download = name;
+  a.click();
+}
+$('#publishBtn').onclick = () => {
+  download('posts.js',
+    '/* Beauty Resource posts. Exported from cms.html.\n   Place at assets/data/posts.js to publish. */\n'
+    + 'window.EM_POSTS = ' + JSON.stringify(DATA.posts, null, 1) + ';\n');
+  setTimeout(() => download('catalog.js',
+    '/* Product catalog. Exported from cms.html.\n   Place at assets/data/catalog.js to publish. */\n'
+    + 'window.EM = ' + JSON.stringify({ masks: DATA.masks, sets: DATA.sets, skincare: DATA.skincare, contact: DATA.contact }, null, 1) + ';\n'), 400);
+  alert('Two files downloaded:\n\nposts.js  ->  assets/data/posts.js\ncatalog.js  ->  assets/data/catalog.js\n\nReplace those two files in the website folder to make the changes live for everyone.');
+};
+
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+  t.classList.add('on');
+  TAB = t.dataset.tab;
+  $('#search').value = '';
+  newItem();
+});
+$('#search').oninput = renderList;
+$('#newBtn').onclick = newItem;
+
+function boot() { loadData(); newItem(); }
+if (sessionStorage.getItem('em_cms_ok') === '1') { document.getElementById('gate').style.display = 'none'; boot(); }
 </script>
 </body>
 </html>
