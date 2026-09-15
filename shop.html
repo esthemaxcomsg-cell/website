@@ -28,7 +28,7 @@
   .logo-img { height: 26px; width: auto; }
   .main-nav { display: flex; gap: 30px; margin: 0 auto; }
   .main-nav a { font-size: 12px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; padding: 8px 2px; border-bottom: 1px solid transparent; transition: border-color 0.25s; white-space: nowrap; }
-  .main-nav a:hover.main-nav a.on { border-color: var(--ink); }
+  .main-nav a:hover, .main-nav a.on { border-color: var(--ink); }
   .header-right { display: flex; align-items: center; gap: 20px; }
   .hicon svg { width: 18px; height: 18px; stroke: var(--ink); fill: none; stroke-width: 1.5; }
 
@@ -115,14 +115,14 @@
   @media (max-width: 1180px) { .cat-grid { grid-template-columns: repeat(3, 1fr); } .jelly-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 820px) {
     .main-nav { display: none; }
-    .header-in.section.news-in.footer-in { padding-left: 20px; padding-right: 20px; }
+    .header-in, .section, .news-in, .footer-in { padding-left: 20px; padding-right: 20px; }
     .cat-grid { grid-template-columns: 1fr 1fr; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
     .shop-hero { min-height: 62vh; }
   }
 </style>
 <link rel="stylesheet" href="assets/reveal.css">
-<link rel="stylesheet" href="assets/theme.css?v=9">
+<link rel="stylesheet" href="assets/theme.css?v=11">
 </head>
 <body>
 

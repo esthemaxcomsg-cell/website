@@ -27,7 +27,7 @@
   .logo-img { height: 26px; width: auto; }
   .main-nav { display: flex; gap: 30px; margin: 0 auto; }
   .main-nav a { font-size: 12px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; padding: 8px 2px; border-bottom: 1px solid transparent; transition: border-color 0.25s; white-space: nowrap; }
-  .main-nav a:hover.main-nav a.on { border-color: var(--ink); }
+  .main-nav a:hover, .main-nav a.on { border-color: var(--ink); }
   .header-right { display: flex; align-items: center; gap: 20px; }
   .hicon svg { width: 18px; height: 18px; stroke: var(--ink); fill: none; stroke-width: 1.5; }
 
@@ -58,7 +58,7 @@
   .form-side .form-note { font-size: 14px; color: var(--soft); margin-bottom: 34px; line-height: 1.6; }
   .field { margin-bottom: 26px; }
   .field label { display: block; font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--soft); margin-bottom: 10px; }
-  .field input.field textarea {
+  .field input, .field textarea {
     width: 100%;
     border: none;
     border-bottom: 1px solid var(--line);
@@ -71,7 +71,7 @@
     resize: vertical;
     transition: border-color 0.25s ease;
   }
-  .field input:focus.field textarea:focus { border-color: var(--ink); }
+  .field input:focus, .field textarea:focus { border-color: var(--ink); }
   .field textarea { min-height: 110px; }
   .btn-dark { display: inline-block; background: var(--ink); color: #F6EFE2; border: none; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; padding: 17px 42px; border-radius: 3px; transition: transform 0.25s ease, box-shadow 0.25s ease; margin-top: 8px; }
   .btn-dark:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(23,19,14,0.18); }
@@ -92,14 +92,14 @@
 
   @media (max-width: 900px) {
     .main-nav { display: none; }
-    .wrap.header-in.news-in.footer-in { padding-left: 20px; padding-right: 20px; }
+    .wrap, .header-in, .news-in, .footer-in { padding-left: 20px; padding-right: 20px; }
     .contact-body { grid-template-columns: 1fr; gap: 60px; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
     .contact-hero { padding: 60px 0 46px; }
   }
 </style>
 <link rel="stylesheet" href="assets/reveal.css">
-<link rel="stylesheet" href="assets/theme.css?v=9">
+<link rel="stylesheet" href="assets/theme.css?v=11">
 </head>
 <body>
 

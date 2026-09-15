@@ -108,7 +108,7 @@
   .acc:first-of-type { border-top: 1px solid var(--line); }
   .acc-q { width: 100%; background: none; border: none; font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); text-align: left; padding: 24px 4px; display: flex; justify-content: space-between; align-items: center; gap: 20px; cursor: pointer; }
   .acc-q .icon { position: relative; width: 14px; height: 14px; flex: 0 0 auto; }
-  .acc-q .icon::before.acc-q .icon::after { content: ''; position: absolute; background: var(--ink); transition: transform 0.3s ease; }
+  .acc-q .icon::before, .acc-q .icon::after { content: ''; position: absolute; background: var(--ink); transition: transform 0.3s ease; }
   .acc-q .icon::before { left: 0; top: 6px; width: 14px; height: 1.5px; }
   .acc-q .icon::after { left: 6.25px; top: 0; width: 1.5px; height: 14px; }
   .acc.open .acc-q .icon::after { transform: scaleY(0); }
@@ -146,13 +146,13 @@
     .rel-grid { grid-template-columns: 1fr; }
     .formula-wrap { grid-template-columns: 1fr; }
     .main-nav { display: none; }
-    .wrap.header-in.specs-in.ritual-in.band-in.news-in.footer-in { padding-left: 20px; padding-right: 20px; }
+    .wrap, .header-in, .specs-in, .ritual-in, .band-in, .news-in, .footer-in { padding-left: 20px; padding-right: 20px; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
     .ritual .r-veil { background: rgba(247,241,230,0.9); }
   }
 </style>
 <link rel="stylesheet" href="assets/reveal.css">
-<link rel="stylesheet" href="assets/theme.css?v=9">
+<link rel="stylesheet" href="assets/theme.css?v=11">
 </head>
 <body>
 

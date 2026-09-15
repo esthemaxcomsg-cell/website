@@ -19,7 +19,7 @@
   .logo-img { height:26px; width:auto; }
   .main-nav { display:flex; gap:30px; margin:0 auto; }
   .main-nav a { font-size:12px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; text-decoration:none; padding:8px 2px; border-bottom:1px solid transparent; transition:border-color 0.25s; white-space:nowrap; }
-  .main-nav a:hover.main-nav a.on { border-color:var(--ink); }
+  .main-nav a:hover, .main-nav a.on { border-color:var(--ink); }
   .header-right { display:flex; align-items:center; gap:20px; }
   .hicon svg { width:18px; height:18px; stroke:var(--ink); fill:none; stroke-width:1.5; }
   .page-hero { background:var(--cream); border-bottom:1px solid var(--line); }
@@ -73,11 +73,11 @@
   .footer-base .pol { display:flex; gap:26px; }
   .footer-base .pol a { font-size:12px; color:var(--soft); text-decoration:none; }
   @media (max-width:1200px) { .prod-grid { grid-template-columns:repeat(3,1fr); } }
-  @media (max-width:900px) { .prod-grid { grid-template-columns:repeat(2,1fr); } .main-nav { display:none; } .header-in.ph-in.tb-in.section.band-in.news-in.footer-in { padding-left:20px; padding-right:20px; } .footer-grid { grid-template-columns:1fr 1fr; } }
+  @media (max-width:900px) { .prod-grid { grid-template-columns:repeat(2,1fr); } .main-nav { display:none; } .header-in, .ph-in, .tb-in, .section, .band-in, .news-in, .footer-in { padding-left:20px; padding-right:20px; } .footer-grid { grid-template-columns:1fr 1fr; } }
   @media (max-width:560px) { .prod-grid { grid-template-columns:1fr; } }
 </style>
 <link rel="stylesheet" href="assets/reveal.css">
-<link rel="stylesheet" href="assets/theme.css?v=9">
+<link rel="stylesheet" href="assets/theme.css?v=11">
 </head>
 <body>
 
