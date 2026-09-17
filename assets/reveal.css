@@ -9,8 +9,11 @@
 }
 .reveal-ready [data-reveal].is-in { opacity: 1; transform: none; }
 
-/* cards: rise a little further and settle from a slight scale */
-.reveal-ready [data-reveal="card"] { transform: translateY(38px) scale(0.975); transition-duration: 1s; }
+/* cards: drop in from above one by one and land with a soft bounce */
+.reveal-ready [data-reveal="card"] {
+  transform: translateY(-70px) scale(0.96);
+  transition: opacity 0.55s ease, transform 0.95s cubic-bezier(0.3, 1.45, 0.5, 1);
+}
 
 /* images and media: soft zoom into place */
 .reveal-ready [data-reveal="media"] { transform: scale(1.05); transition-duration: 1.3s; }

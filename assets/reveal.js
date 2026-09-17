@@ -68,8 +68,10 @@
   /* Stagger each element against its revealed siblings. */
   els.forEach(function (el) {
     var sibs = [].slice.call(el.parentElement.children).filter(function (c) { return c.hasAttribute('data-reveal'); });
-    var step = el.getAttribute('data-reveal') === 'card' ? 90 : 70;
-    el.style.transitionDelay = Math.min(sibs.indexOf(el) * step, 540) + 'ms';
+    var card = el.getAttribute('data-reveal') === 'card';
+    /* cards land one after another; in long grids the count restarts each row of five */
+    var i = card ? sibs.filter(function (s) { return s.getAttribute('data-reveal') === 'card'; }).indexOf(el) % 5 : sibs.indexOf(el);
+    el.style.transitionDelay = (card ? i * 160 : Math.min(i * 70, 540)) + 'ms';
   });
 
   var pending = els.slice();
