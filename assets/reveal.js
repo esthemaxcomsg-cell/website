@@ -15,7 +15,7 @@
   ].join(',');
 
   /* The homepage hero and the shop video hero run their own entrances. */
-  var SKIP = '.hero-stage, .shop-hero, .home-hero, .prod';
+  var SKIP = '.hero-stage, .shop-hero, .home-hero, .pdrn-stage, .prod';
 
   var els = [].slice.call(document.querySelectorAll(TARGETS)).filter(function (el) {
     return !el.closest(SKIP);
