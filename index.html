@@ -384,6 +384,7 @@
   .pdrn-pt p { font-size: 13px; line-height: 1.55; }
   .pdrn-end .btn-pink { margin-top: 18px; }
 
+  @media (max-width: 1180px) { .pdrn-stage .pdrn-chip.note { display: none; } }
   @media (max-width: 820px) {
     .pdrn-track { height: 280vh; }
     .pdrn-word { font-size: clamp(32px, 9.5vw, 46px); line-height: 1.08; padding: 0 18px; }
@@ -1032,10 +1033,8 @@
       stage.style.setProperty('--end', k.toFixed(3));
       stage.classList.toggle('is-end', k > 0.5);
 
-      // the jelly drifts gently on its own; scrolling blends that into the full film
-      const q = clamp((p - 0.06) / 0.74);
-      const idle = 0.55 - 0.55 * Math.cos(performance.now() / 1000 * 0.8);
-      const t = lerp(idle, Math.max(0, dur - 0.06), q);
+      // the film stays still until the section is pinned, then follows the scroll
+      const t = clamp((p - 0.06) / 0.74) * Math.max(0, dur - 0.06);
       if (Math.abs(t - lastT) > 0.02 && v.readyState >= 1 && !v.seeking) { v.currentTime = t; lastT = t; }
     }
 
@@ -1049,15 +1048,6 @@
         ` V${f(r)} A${f(r)},${f(r)} 0 0 1 ${f(r)},0 Z")`;
     }
 
-    // keep the jelly moving while the section is on screen
-    let live = false;
-    function tick() { if (!live) return; frame(); requestAnimationFrame(tick); }
-    if ('IntersectionObserver' in window && isNaN(forced)) {
-      new IntersectionObserver(es => {
-        const on = es[0].isIntersecting;
-        if (on && !live) { live = true; tick(); } else if (!on) { live = false; }
-      }).observe(track);
-    }
     let settle;
     window.addEventListener('scroll', () => {
       frame();
