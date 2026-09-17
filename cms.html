@@ -6,21 +6,21 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Esthemax CMS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,400&display=swap" rel="stylesheet">
 <style>
   :root { --paper:#FCFBF8; --panel:#F4EFE9; --ink:#26211D; --soft:#7C7268; --line:#E8E2D7; --pink:#D6247A; --pink-deep:#A61E60; }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Jost',sans-serif; background:var(--paper); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--ink); -webkit-font-smoothing:antialiased; }
   a { color:inherit; }
 
   /* ---------- login gate ---------- */
   .gate { position:fixed; inset:0; z-index:100; background:var(--pink-deep); display:flex; align-items:center; justify-content:center; padding:24px; }
   .gate-card { background:#fff; border-radius:18px; padding:44px 40px; width:min(420px,100%); text-align:center; box-shadow:0 24px 60px rgba(0,0,0,.22); }
-  .gate-card h1 { font-family:'Playfair Display',serif; font-weight:400; font-size:27px; margin-bottom:8px; }
+  .gate-card h1 { font-family:'Outfit',sans-serif; font-weight:400; font-size:27px; margin-bottom:8px; }
   .gate-card p { font-size:13px; color:var(--soft); margin-bottom:26px; line-height:1.6; }
-  .gate-card input { width:100%; border:1px solid var(--line); border-radius:9px; background:var(--paper); font-family:'Jost'; font-size:15px; padding:14px 16px; outline:none; text-align:center; letter-spacing:.05em; }
+  .gate-card input { width:100%; border:1px solid var(--line); border-radius:9px; background:var(--paper); font-family:'DM Sans'; font-size:15px; padding:14px 16px; outline:none; text-align:center; letter-spacing:.05em; }
   .gate-card input:focus { border-color:var(--pink); }
-  .gate-card button { width:100%; margin-top:14px; border:none; cursor:pointer; background:var(--pink); color:#fff; font-family:'Jost'; font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; padding:15px; border-radius:9px; }
+  .gate-card button { width:100%; margin-top:14px; border:none; cursor:pointer; background:var(--pink); color:#fff; font-family:'DM Sans'; font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; padding:15px; border-radius:9px; }
   .gate-err { color:#C0392B; font-size:13px; margin-top:14px; min-height:18px; }
 
   /* ---------- shell ---------- */
@@ -29,22 +29,22 @@
   .brand-cms { font-weight:600; font-size:19px; color:var(--pink); text-decoration:none; }
   .brand-cms span { font-weight:400; color:var(--soft); font-size:13px; margin-left:9px; }
   .grow { flex:1; }
-  .btn { font-family:'Jost'; font-size:11.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; border:none; cursor:pointer; border-radius:999px; padding:12px 22px; text-decoration:none; display:inline-block; white-space:nowrap; }
+  .btn { font-family:'DM Sans'; font-size:11.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; border:none; cursor:pointer; border-radius:999px; padding:12px 22px; text-decoration:none; display:inline-block; white-space:nowrap; }
   .btn.pink { background:var(--pink); color:#fff; }
   .btn.ghost { background:transparent; border:1px solid var(--ink); color:var(--ink); }
   .btn.danger { background:transparent; border:1px solid #C0392B; color:#C0392B; }
   .btn.tiny { padding:9px 16px; font-size:10.5px; }
 
   .tabs { max-width:1280px; margin:0 auto; padding:22px 30px 0; display:flex; gap:10px; flex-wrap:wrap; }
-  .tab { font-family:'Jost'; font-size:11.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; border:1px solid var(--line); background:transparent; border-radius:999px; padding:11px 24px; cursor:pointer; color:var(--ink); }
+  .tab { font-family:'DM Sans'; font-size:11.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; border:1px solid var(--line); background:transparent; border-radius:999px; padding:11px 24px; cursor:pointer; color:var(--ink); }
   .tab.on { background:var(--ink); border-color:var(--ink); color:#fff; }
 
   .wrap { max-width:1280px; margin:0 auto; padding:26px 30px 90px; display:grid; grid-template-columns:330px 1fr; gap:26px; align-items:start; }
   .hint { background:var(--panel); border-radius:13px; padding:16px 18px; font-size:12.5px; line-height:1.65; color:var(--soft); margin-bottom:18px; }
   .hint b { color:var(--ink); }
-  h2.col-title { font-family:'Playfair Display',serif; font-weight:500; font-size:21px; margin-bottom:14px; }
+  h2.col-title { font-family:'Outfit',sans-serif; font-weight:500; font-size:21px; margin-bottom:14px; }
 
-  .search { width:100%; border:1px solid var(--line); border-radius:9px; background:#fff; font-family:'Jost'; font-size:13.5px; padding:11px 14px; outline:none; margin-bottom:12px; }
+  .search { width:100%; border:1px solid var(--line); border-radius:9px; background:#fff; font-family:'DM Sans'; font-size:13.5px; padding:11px 14px; outline:none; margin-bottom:12px; }
   .search:focus { border-color:var(--pink); }
   .plist { display:flex; flex-direction:column; gap:8px; max-height:70vh; overflow-y:auto; padding-right:4px; }
   .pitem { background:#fff; border:1px solid var(--line); border-radius:11px; padding:12px 14px; cursor:pointer; transition:border-color .2s; display:flex; gap:11px; align-items:center; }
@@ -58,7 +58,7 @@
   .f label { display:block; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--soft); margin-bottom:7px; }
   .f input, .f textarea, .f select {
     width:100%; border:1px solid var(--line); border-radius:9px; background:var(--paper);
-    font-family:'Jost'; font-size:14px; padding:12px 14px; outline:none; color:var(--ink);
+    font-family:'DM Sans'; font-size:14px; padding:12px 14px; outline:none; color:var(--ink);
   }
   .f input:focus, .f textarea:focus, .f select:focus { border-color:var(--pink); }
   .f textarea { min-height:88px; resize:vertical; }
