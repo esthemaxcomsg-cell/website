@@ -151,7 +151,7 @@
     .ritual .r-veil { background: rgba(247,241,230,0.9); }
   }
 </style>
-<link rel="stylesheet" href="assets/reveal.css">
+<link rel="stylesheet" href="assets/reveal.css?v=2">
 <link rel="stylesheet" href="assets/theme.css?v=12">
 </head>
 <body>
@@ -255,8 +255,7 @@
 
   document.getElementById('page').innerHTML = `
     <nav class="crumbs" aria-label="Breadcrumb">
-      <a href="shop.html">Collection</a>
-    <a href="beauty-resource.html">Beauty Resource</a><span class="sep">/</span><a href="${catHref}">${catCrumb}</a><span class="sep">/</span>${esc(cleanName)}
+      <a href="shop.html">Collection</a><span class="sep">/</span><a href="${catHref}">${catCrumb}</a><span class="sep">/</span>${esc(cleanName)}
     </nav>
     <div class="top">
       <div class="gallery"><img src="${p.img}" alt="${esc(cleanName)} container"></div>
@@ -367,6 +366,6 @@
   });
 })();
 </script>
-<script src="assets/reveal.js"></script>
+<script src="assets/reveal.js?v=2"></script>
 </body>
 </html>
