@@ -39,7 +39,8 @@
   .tab { font-family:'DM Sans'; font-size:11.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; border:1px solid var(--line); background:transparent; border-radius:999px; padding:11px 24px; cursor:pointer; color:var(--ink); }
   .tab.on { background:var(--ink); border-color:var(--ink); color:#fff; }
 
-  .wrap { max-width:1280px; margin:0 auto; padding:26px 30px 90px; display:grid; grid-template-columns:330px 1fr; gap:26px; align-items:start; }
+  .top-in, .tabs { max-width:1760px !important; }
+  .wrap { max-width:1760px; margin:0 auto; padding:26px 30px 90px; display:grid; grid-template-columns:270px minmax(340px, 430px) minmax(0, 1fr); gap:24px; align-items:start; }
   .hint { background:var(--panel); border-radius:13px; padding:16px 18px; font-size:12.5px; line-height:1.65; color:var(--soft); margin-bottom:18px; }
   .hint b { color:var(--ink); }
   h2.col-title { font-family:'Outfit',sans-serif; font-weight:500; font-size:21px; margin-bottom:14px; }
@@ -76,6 +77,34 @@
   .status { font-size:12.5px; color:var(--pink); margin-top:13px; min-height:18px; }
   .dot-in { display:flex; gap:10px; align-items:center; }
   .dot-in input[type=color] { width:46px; height:44px; padding:3px; cursor:pointer; }
+  /* photo drop zone */
+  .drop { position:relative; display:flex; gap:16px; align-items:center; border:2px dashed var(--line); border-radius:14px; background:var(--paper); padding:14px; margin-bottom:17px; cursor:pointer; transition:border-color .2s, background .2s; }
+  .drop:hover, .drop.over { border-color:var(--pink); background:#FFF5FA; }
+  .drop img { width:92px; height:92px; object-fit:contain; background:#fff; border-radius:10px; border:1px solid var(--line); flex:0 0 auto; }
+  .drop.wide img { width:150px; object-fit:cover; }
+  .drop b { display:block; font-size:14px; margin-bottom:4px; }
+  .drop span { font-size:12px; color:var(--soft); line-height:1.5; display:block; }
+  .drop input { display:none; }
+  .mini-row { display:flex; gap:10px; flex-wrap:wrap; margin:-6px 0 17px; }
+
+  /* live preview */
+  .col-prev { position:sticky; top:84px; }
+  .prev-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+  .prev-head h2 { margin:0 !important; }
+  .seg { display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:#fff; }
+  .seg button { border:none; background:transparent; font-family:'DM Sans'; font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; padding:9px 16px; cursor:pointer; color:var(--soft); }
+  .seg button.on { background:var(--ink); color:#fff; }
+  .prev-frame { position:relative; height:calc(100vh - 170px); min-height:520px; border:1px solid var(--line); border-radius:15px; overflow:hidden; background:#EFEAE4; }
+  .prev-frame iframe { position:absolute; left:0; top:0; border:none; background:#fff; transform-origin:0 0; }
+  .prev-frame.phone iframe { left:50%; border-radius:26px; box-shadow:0 18px 50px rgba(0,0,0,.2); }
+  .prev-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:40px; color:var(--soft); font-size:14px; line-height:1.7; background:var(--paper); }
+  .prev-tip { font-size:12px; color:var(--soft); margin-top:10px; line-height:1.6; }
+  .meter { font-size:11.5px; color:var(--soft); display:flex; align-items:center; gap:8px; }
+  .meter i { display:block; width:90px; height:5px; border-radius:5px; background:var(--line); overflow:hidden; }
+  .meter i b { display:block; height:100%; background:var(--pink); }
+  .flash { animation:flash 1.2s ease; }
+  @keyframes flash { 0% { box-shadow:0 0 0 4px rgba(214,36,122,.45); } 100% { box-shadow:0 0 0 4px rgba(214,36,122,0); } }
+  @media (max-width:1240px) { .wrap { grid-template-columns:260px 1fr; } .col-prev { grid-column:1 / -1; position:static; } .prev-frame { height:760px; } }
   @media (max-width:940px) { .wrap { grid-template-columns:1fr; } .plist { max-height:none; } }
 </style>
 </head>
@@ -95,8 +124,8 @@
   <div class="top-in">
     <a class="brand-cms" href="index.html">esthemax <span>Content Manager</span></a>
     <div class="grow"></div>
-    <a class="btn ghost" href="beauty-resource.html" target="_blank">Preview Blog</a>
-    <a class="btn ghost" href="shop.html" target="_blank">Preview Shop</a>
+    <div class="meter" title="Space used by unpublished drafts and photos in this browser">Draft space <i><b id="meterBar" style="width:0%"></b></i><span id="meterTxt">0%</span></div>
+    <button class="btn ghost tiny" id="resetBtn">Discard draft</button>
     <button class="btn pink" id="publishBtn">Publish Changes</button>
     <button class="btn ghost tiny" id="logoutBtn">Lock</button>
   </div>
@@ -120,6 +149,19 @@
   <div class="col-form">
     <h2 class="col-title" id="formTitle">New</h2>
     <div class="card" id="formCard"></div>
+  </div>
+  <div class="col-prev">
+    <div class="prev-head">
+      <h2 class="col-title">Live preview</h2>
+      <div class="grow"></div>
+      <div class="seg"><button class="on" data-dev="desktop">Desktop</button><button data-dev="phone">Phone</button></div>
+      <button class="btn ghost tiny" id="openBtn">Open full page</button>
+    </div>
+    <div class="prev-frame" id="prevFrame">
+      <iframe id="prev" title="Live page preview"></iframe>
+      <div class="prev-empty" id="prevEmpty">Give it a name (and a product code) and the real page appears here as you type.</div>
+    </div>
+    <p class="prev-tip" id="prevTip"></p>
   </div>
 </div>
 
@@ -172,10 +214,24 @@ function loadData() {
   DATA.contact = cat.contact || base.contact;
 }
 function persist() {
-  localStorage.setItem('em_posts', JSON.stringify(DATA.posts));
-  localStorage.setItem('em_catalog', JSON.stringify({
-    masks: DATA.masks, sets: DATA.sets, skincare: DATA.skincare, contact: DATA.contact
-  }));
+  try {
+    localStorage.setItem('em_posts', JSON.stringify(DATA.posts));
+    localStorage.setItem('em_catalog', JSON.stringify({
+      masks: DATA.masks, sets: DATA.sets, skincare: DATA.skincare, contact: DATA.contact
+    }));
+  } catch (e) {
+    const s = document.getElementById('status');
+    if (s) s.textContent = 'This browser has run out of draft space for photos. Press Publish Changes to export what you have, then Discard draft, and carry on.';
+    return false;
+  }
+  meter();
+  return true;
+}
+function meter() {
+  const used = ((localStorage.getItem('em_posts') || '').length + (localStorage.getItem('em_catalog') || '').length) / (5 * 1024 * 1024);
+  const pct = Math.min(100, Math.round(used * 100));
+  document.getElementById('meterBar').style.width = pct + '%';
+  document.getElementById('meterTxt').textContent = pct + '%';
 }
 
 const CATS = ['hydrate','brighten','clarify','calm','firm'];
@@ -185,7 +241,7 @@ const TAGS = ['Education','Video','Catalog','News','Treatment'];
 const CFG = {
   posts: {
     title: 'Blog Posts', idKey: 'id',
-    hint: '<b>Blog posts</b> appear on the Beauty Resource page.<br>Paste a YouTube link to embed a video. For a PDF, put the file in <b>assets/pdfs/</b> then type its path.',
+    hint: '<b>Blog posts</b> appear on the Beauty Resource page. Drop in a cover photo, type the story, and watch the page build on the right. Paste a YouTube link to embed a video.',
     label: p => p.title,
     sub: p => [p.date, p.tag, p.youtube ? 'video' : '', p.pdf ? 'pdf' : ''],
     img: p => p.cover,
@@ -193,7 +249,7 @@ const CFG = {
   },
   masks: {
     title: 'Hydrojelly Masks', idKey: 'code',
-    hint: '<b>Hydrojelly masks</b> show on the collection page and each gets its own product page.<br>Put jar photos in <b>assets/products/us/</b> named by code, for example <b>809.jpg</b>.',
+    hint: '<b>Hydrojelly masks</b> show on the collection page and each gets its own product page. Drop the jar photo in, fill in the words, and check the page on the right.',
     label: p => p.name,
     sub: p => ['No. ' + p.code, (p.cats || []).join(', ')],
     img: p => p.img,
@@ -201,7 +257,7 @@ const CFG = {
   },
   skincare: {
     title: 'Skincare', idKey: 'slug',
-    hint: '<b>Skincare products</b> appear on their category page (serums, creams, cleansers, massage).<br>Put photos in <b>assets/products/skincare/</b>.',
+    hint: '<b>Skincare products</b> appear on their category page (serums, creams, cleansers, massage) and get their own product page.',
     label: p => p.name,
     sub: p => [p.category, p.size],
     img: p => p.img,
@@ -241,10 +297,11 @@ function formHtml(p) {
     + '<div class="f"><label>Tag</label><select id="c-tag">' + TAGS.map(t => '<option' + (t === p.tag ? ' selected' : '') + '>' + t + '</option>').join('') + '</select></div></div>'
     + '<div class="row2">'
     + '<div class="f"><label>Date</label><input id="c-date" type="date" value="' + esc(p.date) + '"></div>'
-    + '<div class="f"><label>Cover image path</label><input id="c-cover" value="' + esc(p.cover) + '" placeholder="assets/banners/hero-jelly.jpg"></div></div>'
+    + '<div class="f"><label>Cover photo</label><input id="c-cover" type="hidden" value="' + esc(p.cover) + '"><div class="sub" style="margin-top:0">Use the photo box above.</div></div></div>'
     + '<div class="f"><label>Excerpt (shown on the card)</label><textarea id="c-excerpt">' + esc(p.excerpt) + '</textarea></div>'
     + '<div class="f"><label>Body</label><textarea id="c-body" class="tall">' + esc(bodyToText(p.body)) + '</textarea>'
-    + '<div class="sub">Leave a blank line between paragraphs. HTML such as &lt;h3&gt; and links is allowed.</div></div>'
+    + '<div class="sub">Leave a blank line between paragraphs. You can also click into the article on the right and type there.</div></div>'
+    + '<div class="mini-row"><button class="btn ghost tiny" id="bodyPhotoBtn" type="button">+ Add a photo into the article</button><input id="bodyPhotoIn" type="file" accept="image/*" style="display:none"></div>'
     + '<div class="row2">'
     + '<div class="f"><label>YouTube link (optional)</label><input id="c-youtube" value="' + esc(p.youtube) + '" placeholder="https://youtu.be/..."></div>'
     + '<div class="f"><label>PDF path (optional)</label><input id="c-pdf" value="' + esc(p.pdf) + '" placeholder="assets/pdfs/catalog.pdf"></div></div>';
@@ -255,7 +312,8 @@ function formHtml(p) {
     + '<div class="f"><label>Product code</label><input id="c-code" value="' + esc(p.code) + '" placeholder="809"></div>'
     + '<div class="f"><label>Dot colour</label><div class="dot-in"><input id="c-dot" type="color" value="' + esc(p.dot || '#D6247A') + '"><input id="c-dot-x" value="' + esc(p.dot || '#D6247A') + '"></div></div></div>'
     + '<div class="row2">'
-    + '<div class="f"><label>Image path</label><input id="c-img" value="' + esc(p.img) + '" placeholder="assets/products/us/809.jpg"></div>'
+    + '<input id="c-img" type="hidden" value="' + esc(p.img) + '">'
+    + '<div class="f"><label>Product code</label><input value="' + esc(p.code) + '" disabled style="opacity:.55"></div>'
     + '<div class="f"><label>Benefit pair</label><input id="c-tags" value="' + esc(p.tags) + '" placeholder="Calm &middot; Refresh"></div></div>'
     + '<div class="f"><label>Filter categories</label><div class="chips" id="c-cats">'
     + CATS.map(c => '<span class="chip' + ((p.cats || []).includes(c) ? ' on' : '') + '" data-c="' + c + '">' + c + '</span>').join('') + '</div></div>'
@@ -269,7 +327,8 @@ function formHtml(p) {
     + '<div class="f"><label>Product code</label><input id="c-code" value="' + esc(p.code) + '"></div>'
     + '<div class="f"><label>Category</label><select id="c-category">' + SKIN_CATS.map(c => '<option' + (c === p.category ? ' selected' : '') + '>' + c + '</option>').join('') + '</select></div></div>'
     + '<div class="row2">'
-    + '<div class="f"><label>Image path</label><input id="c-img" value="' + esc(p.img) + '" placeholder="assets/products/skincare/name.jpg"></div>'
+    + '<input id="c-img" type="hidden" value="' + esc(p.img) + '">'
+    + '<div class="f"><label>Shown on</label><input value="Its category page and its own product page" disabled style="opacity:.55"></div>'
     + '<div class="f"><label>Size</label><input id="c-size" value="' + esc(p.size) + '" placeholder="3.38 FL.OZ / 100 ML"></div></div>'
     + '<div class="f"><label>Skin concerns</label><input id="c-concerns" value="' + esc(p.concerns) + '"></div>'
     + '<div class="f"><label>Description</label><textarea id="c-desc" class="tall">' + esc(p.desc) + '</textarea></div>'
@@ -279,51 +338,113 @@ function formHtml(p) {
     + '<div class="row2">'
     + '<div class="f"><label>Name</label><input id="c-name" value="' + esc(p.name) + '"></div>'
     + '<div class="f"><label>Code</label><input id="c-code" value="' + esc(p.code) + '"></div></div>'
-    + '<div class="f"><label>Image path</label><input id="c-img" value="' + esc(p.img) + '"></div>'
+    + '<input id="c-img" type="hidden" value="' + esc(p.img) + '">'
     + '<div class="f"><label>Description</label><textarea id="c-desc" class="tall">' + esc(p.desc) + '</textarea></div>';
 }
 
 function renderForm(p) {
+  const wide = TAB === 'posts';
+  const src = CFG[TAB].img(p) || '';
   $('#formCard').innerHTML =
-    '<div class="preview"><img id="pv-img" src="' + esc(CFG[TAB].img(p) || '') + '" alt="" onerror="this.style.visibility=\'hidden\'">'
-    + '<div class="pv-note">Image preview. Paths are relative to the website folder, for example <b>assets/products/us/809.jpg</b>.</div></div>'
+    '<label class="drop' + (wide ? ' wide' : '') + '" id="drop">'
+    + '<img id="pv-img" src="' + esc(src) + '" alt="" onerror="this.style.visibility=\'hidden\'" style="' + (src ? '' : 'visibility:hidden') + '">'
+    + '<div><b>' + (wide ? 'Cover photo' : 'Product photo') + '</b><span>Drop a photo here, or click to choose one from your computer. It is resized automatically.</span></div>'
+    + '<input id="photoIn" type="file" accept="image/*"></label>'
     + formHtml(p)
-    + '<div class="actions"><button class="btn pink" id="saveBtn">Save</button>'
-    + '<button class="btn ghost" id="viewBtn">View on site</button>'
-    + '<button class="btn danger" id="delBtn">Delete</button></div><div class="status" id="status"></div>';
+    + '<div class="actions"><button class="btn pink" id="saveBtn">Save draft</button>'
+    + '<button class="btn danger" id="delBtn">Delete</button></div><div class="status" id="status">Changes save automatically as a draft. Nothing goes live until you press Publish Changes.</div>';
 
-  $('#saveBtn').onclick = save;
+  $('#saveBtn').onclick = () => save(false);
   $('#delBtn').onclick = del;
-  $('#viewBtn').onclick = viewOnSite;
 
   const chips = $('#c-cats');
-  if (chips) chips.querySelectorAll('.chip').forEach(c => c.onclick = () => c.classList.toggle('on'));
+  if (chips) chips.querySelectorAll('.chip').forEach(c => c.onclick = () => { c.classList.toggle('on'); autosave(); });
   const dot = $('#c-dot'), dotx = $('#c-dot-x');
   if (dot) {
-    dot.oninput = () => dotx.value = dot.value;
+    dot.oninput = () => { dotx.value = dot.value; autosave(); };
     dotx.oninput = () => { if (/^#[0-9a-f]{6}$/i.test(dotx.value)) dot.value = dotx.value; };
   }
-  const imgIn = $('#c-img') || $('#c-cover');
-  if (imgIn) imgIn.oninput = () => { const pv = $('#pv-img'); pv.src = imgIn.value; pv.style.visibility = 'visible'; };
+
+  // photo: click or drag and drop
+  const drop = $('#drop'), photoIn = $('#photoIn');
+  const takePhoto = async file => {
+    if (!file || !/^image\//.test(file.type)) return;
+    const url = await shrink(file, wide ? { max: 1600, fill: false, q: 0.84 } : { max: 1100, fill: true, q: 0.88 });
+    ($('#c-img') || $('#c-cover')).value = url;
+    const pv = $('#pv-img'); pv.src = url; pv.style.visibility = 'visible';
+    save(true);
+  };
+  photoIn.onchange = () => takePhoto(photoIn.files[0]);
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => takePhoto(e.dataTransfer.files[0]));
+
+  // photo inside a blog article
+  const bp = $('#bodyPhotoBtn'), bpIn = $('#bodyPhotoIn');
+  if (bp) {
+    bp.onclick = () => bpIn.click();
+    bpIn.onchange = async () => {
+      const f = bpIn.files[0]; if (!f) return;
+      const key = 'p' + Date.now().toString(36);
+      PHOTOS[key] = await shrink(f, { max: 1400, fill: false, q: 0.84 });
+      const ta = $('#c-body'), pos = ta.selectionStart || ta.value.length;
+      ta.value = ta.value.slice(0, pos).replace(/\s*$/, '') + '\n\n[photo:' + key + ']\n\n' + ta.value.slice(pos).replace(/^\s*/, '');
+      bpIn.value = '';
+      save(true);
+    };
+  }
+
+  // everything typed saves itself and refreshes the preview
+  $('#formCard').querySelectorAll('input:not([type=file]):not([type=hidden]):not([disabled]), textarea, select')
+    .forEach(el => el.addEventListener('input', autosave));
 }
 
+/* Resize a chosen photo in the browser so it is web-ready (and small enough to keep in the draft). */
+function shrink(file, o) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, o.max / Math.max(img.width, img.height));
+      const w = Math.round(img.width * k), h = Math.round(img.height * k);
+      const c = document.createElement('canvas');
+      const side = o.fill ? Math.max(w, h) : 0;          // product photos sit centred on a white square
+      c.width = o.fill ? side : w; c.height = o.fill ? side : h;
+      const g = c.getContext('2d');
+      g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+      g.drawImage(img, (c.width - w) / 2, (c.height - h) / 2, w, h);
+      URL.revokeObjectURL(img.src);
+      resolve(c.toDataURL('image/jpeg', o.q));
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+let PHOTOS = {};   // photos placed inside the article being edited: key -> image
 function bodyToText(html) {
-  return String(html || '').replace(/<\/p>\s*<p>/g, '\n\n').replace(/^<p>|<\/p>$/g, '').replace(/<br\s*\/?>/g, '\n');
+  PHOTOS = {};
+  html = String(html || '').replace(/<figure class="a-photo" data-k="([^"]+)"><img src="([^"]*)"[^>]*><\/figure>/g,
+    (m, k, src) => { PHOTOS[k] = src; return '<p>[photo:' + k + ']</p>'; });
+  return html.replace(/<\/p>\s*<p>/g, '\n\n').replace(/^<p>|<\/p>$/g, '').replace(/<br\s*\/?>/g, '\n');
 }
 function textToBody(raw) {
   raw = (raw || '').trim();
   if (!raw) return '';
-  if (/<p[\s>]/i.test(raw)) return raw;
+  const fig = k => PHOTOS[k] ? '<figure class="a-photo" data-k="' + k + '"><img src="' + PHOTOS[k] + '" alt=""></figure>' : '';
+  if (/<p[\s>]/i.test(raw)) return raw.replace(/<p>\[photo:([^\]]+)\]<\/p>/g, (m, k) => fig(k));
   return raw.split(/\n\s*\n/).map(part => {
-    part = part.trim().replace(/\n/g, '<br>');
-    return /^<(h\d|ul|ol|blockquote|div|img|table)/i.test(part) ? part : '<p>' + part + '</p>';
+    part = part.trim();
+    const ph = part.match(/^\[photo:([^\]]+)\]$/);
+    if (ph) return fig(ph[1]);
+    part = part.replace(/\n/g, '<br>');
+    return /^<(h\d|ul|ol|blockquote|div|img|table|figure)/i.test(part) ? part : '<p>' + part + '</p>';
   }).join('');
 }
 
 function collect() {
   const v = id => { const el = $('#' + id); return el ? el.value.trim() : ''; };
   if (TAB === 'posts') return {
-    id: currentId || slugify(v('c-title')) || 'post-' + Date.now(),
+    id: (!isNew && currentId) || slugify(v('c-title')) || 'post-' + Date.now(),
     title: v('c-title'), date: v('c-date') || new Date().toISOString().slice(0, 10),
     tag: v('c-tag'), cover: v('c-cover'), excerpt: v('c-excerpt'),
     body: textToBody($('#c-body').value), youtube: v('c-youtube'), pdf: v('c-pdf')
@@ -331,80 +452,217 @@ function collect() {
   if (TAB === 'masks') return {
     code: v('c-code'), name: v('c-name'), dot: v('c-dot'), tags: v('c-tags'),
     cats: [].slice.call(document.querySelectorAll('#c-cats .chip.on')).map(c => c.dataset.c),
-    img: v('c-img') || ('assets/products/us/' + v('c-code') + '.jpg'),
+    img: v('c-img'),
     desc: v('c-desc'), concerns: v('c-concerns'), ingredients: v('c-ingredients')
   };
   if (TAB === 'skincare') return {
-    slug: currentId || slugify(v('c-name')), name: v('c-name'), code: v('c-code'),
+    slug: (!isNew && currentId) || slugify(v('c-name')), name: v('c-name'), code: v('c-code'),
     category: v('c-category'), size: v('c-size'), desc: v('c-desc'),
     concerns: v('c-concerns'), ingredients: v('c-ingredients'),
-    img: v('c-img') || ('assets/products/skincare/' + slugify(v('c-name')) + '.jpg')
+    img: v('c-img')
   };
   return { code: v('c-code'), name: v('c-name'), img: v('c-img'), desc: v('c-desc') };
 }
 
-function save() {
+let isNew = true, autoTimer = null;
+function autosave() { clearTimeout(autoTimer); autoTimer = setTimeout(() => save(true), 450); }
+
+function save(quiet) {
   const cfg = CFG[TAB];
   const rec = collect();
   const id = rec[cfg.idKey];
-  if (!id || !(rec.title || rec.name)) { $('#status').textContent = 'A name/title and code are required.'; return; }
+  if (!id || !(rec.title || rec.name)) {
+    if (!quiet) $('#status').textContent = 'A name/title and code are needed first.';
+    return;
+  }
   const list = DATA[TAB];
-  const i = list.findIndex(x => String(x[cfg.idKey]) === String(id));
-  if (i > -1) { list[i] = rec; } else { list.push(rec); }
+  const clash = list.findIndex(x => String(x[cfg.idKey]) === String(id));
+  const mine = currentId === null ? -1 : list.findIndex(x => String(x[cfg.idKey]) === String(currentId));
+  if (clash > -1 && clash !== mine) { $('#status').textContent = 'Another item already uses "' + id + '". Pick a different code or name.'; return; }
+  if (mine > -1) list[mine] = rec; else list.push(rec);
   currentId = id;
-  persist();
+  if (!persist()) return;
   renderList();
   $('#formTitle').textContent = 'Edit: ' + (rec.title || rec.name);
-  $('#status').textContent = 'Saved. Visible in Preview now. Press Publish Changes when you are ready to go live.';
+  $('#status').textContent = 'Draft saved at ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '. Press Publish Changes when you are ready to go live.';
+  refreshPreview();
 }
 
 function del() {
   const cfg = CFG[TAB];
-  if (!currentId) { newItem(); return; }
+  if (currentId === null) { newItem(); return; }
   if (!confirm('Delete this item?')) return;
   DATA[TAB] = DATA[TAB].filter(x => String(x[cfg.idKey]) !== String(currentId));
   persist(); newItem(); renderList();
 }
 
-function viewOnSite() {
-  if (!currentId) { $('#status').textContent = 'Save it first.'; return; }
-  const url = TAB === 'posts'
-    ? 'beauty-resource.html?id=' + encodeURIComponent(currentId)
-    : 'product.html?id=' + encodeURIComponent(currentId);
-  window.open(url, '_blank');
+function pageUrl() {
+  if (currentId === null) return '';
+  return (TAB === 'posts' ? 'beauty-resource.html?id=' : 'product.html?id=') + encodeURIComponent(currentId);
 }
 
 function load(id) {
   const cfg = CFG[TAB];
   const p = DATA[TAB].find(x => String(x[cfg.idKey]) === String(id));
   if (!p) return;
-  currentId = id;
+  currentId = id; isNew = false;
   $('#formTitle').textContent = 'Edit: ' + (p.title || p.name);
   renderForm(p);
   renderList();
+  refreshPreview(true);
 }
 
 function newItem() {
-  currentId = null;
+  currentId = null; isNew = true; PHOTOS = {};
   $('#formTitle').textContent = 'New ' + CFG[TAB].title.replace(/s$/, '');
   renderForm(CFG[TAB].blank());
   renderList();
+  refreshPreview(true);
 }
 
-function download(name, text) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([text], { type: 'text/javascript' }));
-  a.download = name;
-  a.click();
+/* ---------------- live preview: the real page, in a frame ---------------- */
+const prev = $('#prev'), prevFrame = $('#prevFrame');
+let DEVICE = 'desktop', keepScroll = 0, editingInPage = false;
+
+function fitPreview() {
+  const W = prevFrame.clientWidth, H = prevFrame.clientHeight;
+  if (DEVICE === 'phone') {
+    const s = Math.min(1, (H - 30) / 844);
+    prev.style.width = '390px'; prev.style.height = '844px';
+    prev.style.transform = 'translateX(-50%) scale(' + s + ')'; prev.style.top = '15px';
+  } else {
+    const s = W / 1360;
+    prev.style.width = '1360px'; prev.style.height = (H / s) + 'px';
+    prev.style.transform = 'scale(' + s + ')'; prev.style.top = '0';
+  }
+  prevFrame.classList.toggle('phone', DEVICE === 'phone');
 }
+function refreshPreview(top) {
+  const url = pageUrl();
+  $('#prevEmpty').style.display = url ? 'none' : 'flex';
+  $('#prevTip').textContent = !url ? '' : TAB === 'posts'
+    ? 'Tip: click the title or the article text in the preview and type straight onto the page. Click the cover to change the photo.'
+    : 'Tip: hover over the preview and click any highlighted part (photo, name, description) to jump to where you edit it.';
+  if (!url) { prev.removeAttribute('src'); return; }
+  try { keepScroll = top ? 0 : (prev.contentWindow.scrollY || 0); } catch (e) { keepScroll = 0; }
+  prev.src = url + '&cms=1&t=' + Date.now();
+}
+prev.addEventListener('load', () => {
+  let d; try { d = prev.contentDocument; } catch (e) { return; }
+  if (!d || !d.body || !prev.getAttribute('src')) return;
+  prev.contentWindow.scrollTo(0, keepScroll);
+
+  const st = d.createElement('style');
+  st.textContent = '[data-cms]{outline:2px dashed transparent;outline-offset:5px;cursor:pointer;transition:outline-color .15s}'
+    + '[data-cms]:hover,[data-cms]:focus{outline-color:#E2007E}'
+    + '#cmsLabel{position:fixed;z-index:9999;background:#E2007E;color:#fff;font:600 12px/1 "DM Sans",sans-serif;padding:7px 11px;border-radius:999px;pointer-events:none;display:none;white-space:nowrap}'
+    + '.a-body figure.a-photo{margin:30px 0}.a-body figure.a-photo img{max-width:100%;border-radius:14px;display:block}';
+  d.head.appendChild(st);
+  const label = d.createElement('div'); label.id = 'cmsLabel'; d.body.appendChild(label);
+
+  // which part of the page belongs to which field
+  const MAP = TAB === 'posts'
+    ? [['.article h1', 'c-title', 'Title (type here)', 'text'], ['.a-cover', 'photo', 'Change cover photo'], ['.a-meta', 'c-tag', 'Tag and date'],
+       ['.a-body', 'c-body', 'Article (type here)', 'html'], ['.a-video', 'c-youtube', 'YouTube link'], ['.a-pdf', 'c-pdf', 'PDF']]
+    : [['.gallery', 'photo', 'Change photo'], ['.info h1', 'c-name', 'Name'], ['.info .subtitle', 'c-name', 'Name'], ['.info .lead', 'c-desc', 'Description'],
+       ['.info .b-row', 'c-tags', 'Benefit pair'], ['.spec', 'c-tags', 'Benefit pair']];
+  MAP.forEach(m => d.querySelectorAll(m[0]).forEach(el => { el.dataset.cms = m[1]; el.dataset.cmsLabel = m[2]; if (m[3]) el.dataset.cmsEdit = m[3]; }));
+  d.querySelectorAll('.acc').forEach(acc => {
+    const q = (acc.querySelector('.acc-q') || {}).textContent || '';
+    const f = /^Full Desc/i.test(q) ? ['c-desc', 'Description'] : /^Benefits/i.test(q) ? ['c-concerns', 'Skin concerns'] : /Ingredient/i.test(q) ? ['c-ingredients', 'Ingredients'] : null;
+    if (f) { acc.dataset.cms = f[0]; acc.dataset.cmsLabel = f[1]; }
+  });
+
+  d.addEventListener('mousemove', e => {
+    const el = e.target.closest && e.target.closest('[data-cms]');
+    if (!el) { label.style.display = 'none'; return; }
+    label.textContent = el.dataset.cmsLabel; label.style.display = 'block';
+    label.style.left = Math.min(e.clientX + 14, d.documentElement.clientWidth - 190) + 'px'; label.style.top = (e.clientY + 16) + 'px';
+  });
+  d.addEventListener('mouseleave', () => { label.style.display = 'none'; });
+
+  d.addEventListener('click', e => {
+    const el = e.target.closest && e.target.closest('[data-cms]');
+    const link = e.target.closest && e.target.closest('a');
+    if (link && !(el && el.dataset.cmsEdit)) e.preventDefault();      // the preview stays on this page
+    if (!el) return;
+    if (el.dataset.cmsEdit) return;                                   // typed in place, handled below
+    e.preventDefault();
+    if (el.dataset.cms === 'photo') { $('#photoIn').click(); return; }
+    const field = document.getElementById(el.dataset.cms);
+    if (field) { field.scrollIntoView({ behavior: 'smooth', block: 'center' }); field.focus(); field.classList.remove('flash'); void field.offsetWidth; field.classList.add('flash'); }
+  }, true);
+
+  // blog title and article can be typed straight onto the page
+  d.querySelectorAll('[data-cms-edit]').forEach(el => {
+    el.contentEditable = el.dataset.cmsEdit === 'text' ? 'plaintext-only' : 'true';
+    if (el.contentEditable !== 'plaintext-only' && el.dataset.cmsEdit === 'text') el.contentEditable = 'true';
+    el.addEventListener('input', () => {
+      const p = DATA.posts.find(x => String(x.id) === String(currentId)); if (!p) return;
+      if (el.dataset.cmsEdit === 'text') { p.title = el.textContent.trim(); $('#c-title').value = p.title; }
+      else { p.body = el.innerHTML; $('#c-body').value = bodyToText(p.body); }
+      persist(); renderList();
+      $('#status').textContent = 'Draft saved from the page.';
+    });
+  });
+});
+document.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.seg button').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); DEVICE = b.dataset.dev; fitPreview(); refreshPreview();
+});
+$('#openBtn').onclick = () => { const u = pageUrl(); if (u) window.open(u, '_blank'); };
+addEventListener('resize', fitPreview);
+
+/* ---------------- publish: one zip with the data and any new photos ---------------- */
+const CRC = (() => { const t = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const crc32 = u8 => { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+function makeZip(files) {           // files: [{name, data: Uint8Array}], stored without compression
+  const enc = new TextEncoder(), parts = [], central = []; let offset = 0;
+  files.forEach(f => {
+    const name = enc.encode(f.name), crc = crc32(f.data), size = f.data.length;
+    const head = new DataView(new ArrayBuffer(30));
+    head.setUint32(0, 0x04034b50, true); head.setUint16(4, 20, true); head.setUint16(8, 0, true);
+    head.setUint32(14, crc, true); head.setUint32(18, size, true); head.setUint32(22, size, true); head.setUint16(26, name.length, true);
+    parts.push(new Uint8Array(head.buffer), name, f.data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true);
+    c.setUint32(16, crc, true); c.setUint32(20, size, true); c.setUint32(24, size, true); c.setUint16(28, name.length, true); c.setUint32(42, offset, true);
+    central.push(new Uint8Array(c.buffer), name);
+    offset += 30 + name.length + size;
+  });
+  const cSize = central.reduce((n, p) => n + p.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, cSize, true); end.setUint32(16, offset, true);
+  return new Blob([...parts, ...central, new Uint8Array(end.buffer)], { type: 'application/zip' });
+}
+function dataUrlBytes(u) { const b = atob(u.split(',')[1]); const a = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+
 $('#publishBtn').onclick = () => {
-  download('posts.js',
-    '/* Beauty Resource posts. Exported from cms.html.\n   Place at assets/data/posts.js to publish. */\n'
-    + 'window.EM_POSTS = ' + JSON.stringify(DATA.posts, null, 1) + ';\n');
-  setTimeout(() => download('catalog.js',
-    '/* Product catalog. Exported from cms.html.\n   Place at assets/data/catalog.js to publish. */\n'
-    + 'window.EM = ' + JSON.stringify({ masks: DATA.masks, sets: DATA.sets, skincare: DATA.skincare, contact: DATA.contact }, null, 1) + ';\n'), 400);
-  alert('Two files downloaded:\n\nposts.js  ->  assets/data/posts.js\ncatalog.js  ->  assets/data/catalog.js\n\nReplace those two files in the website folder to make the changes live for everyone.');
+  const enc = new TextEncoder(), files = [], out = clone(DATA);
+  const lift = (url, path) => { if (!/^data:image\//.test(url || '')) return url; files.push({ name: path, data: dataUrlBytes(url) }); return path; };
+  out.masks.forEach(p => { p.img = lift(p.img, 'assets/uploads/mask-' + slugify(p.code) + '.jpg'); });
+  out.sets.forEach(p => { p.img = lift(p.img, 'assets/uploads/set-' + slugify(p.code) + '.jpg'); });
+  out.skincare.forEach(p => { p.img = lift(p.img, 'assets/uploads/skincare-' + slugify(p.slug) + '.jpg'); });
+  out.posts.forEach(p => {
+    p.cover = lift(p.cover, 'assets/uploads/post-' + slugify(p.id) + '-cover.jpg');
+    p.body = String(p.body || '').replace(/(<figure class="a-photo" data-k=")([^"]+)("><img src=")(data:image\/[^"]+)(")/g,
+      (m, a, k, b, url, c) => a + k + b + lift(url, 'assets/uploads/post-' + slugify(p.id) + '-' + k + '.jpg') + c);
+  });
+  files.unshift(
+    { name: 'assets/data/posts.js', data: enc.encode('/* Beauty Resource posts. Exported from cms.html. */\nwindow.EM_POSTS = ' + JSON.stringify(out.posts, null, 1) + ';\n') },
+    { name: 'assets/data/catalog.js', data: enc.encode('/* Product catalog. Exported from cms.html. */\nwindow.EM = ' + JSON.stringify({ masks: out.masks, sets: out.sets, skincare: out.skincare, contact: out.contact }, null, 1) + ';\n') }
+  );
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(makeZip(files));
+  a.download = 'esthemax-update.zip';
+  a.click();
+  alert('esthemax-update.zip downloaded (' + (files.length - 2) + ' new photo(s) included).\n\nSend this file to your web developer, or run tools/apply-cms-update.sh in the website folder, to make the changes live for everyone.');
+};
+
+$('#resetBtn').onclick = () => {
+  if (!confirm('Throw away every unpublished change in this browser and go back to what is live on the website?')) return;
+  localStorage.removeItem('em_posts'); localStorage.removeItem('em_catalog'); location.reload();
 };
 
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
@@ -417,7 +675,7 @@ document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
 $('#search').oninput = renderList;
 $('#newBtn').onclick = newItem;
 
-function boot() { loadData(); newItem(); }
+function boot() { loadData(); fitPreview(); meter(); newItem(); }
 if (sessionStorage.getItem('em_cms_ok') === '1') { document.getElementById('gate').style.display = 'none'; boot(); }
 </script>
 </body>

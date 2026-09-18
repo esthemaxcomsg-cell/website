@@ -2,6 +2,9 @@
    text fades up, cards come in staggered and images ease into place.
    Runs last on every page so grids built by the page's own script are included. */
 (function () {
+  /* inside the CMS live preview the page should simply be there, no entrances */
+  if (/[?&]cms=1/.test(location.search)) return;
+
   var CARDS = [
     '.cat-card', '.jelly-card', '.why-card', '.faq-item', '.rel-card', '.pcard', '.prod', '.post-card',
     '.feature', '.pillar', '.panel', '.acc', '.d-row', '.spec', '.fact', '.form-side', '.map-wrap',
