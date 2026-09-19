@@ -99,6 +99,19 @@
   .prev-frame.phone iframe { left:50%; border-radius:26px; box-shadow:0 18px 50px rgba(0,0,0,.2); }
   .prev-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:40px; color:var(--soft); font-size:14px; line-height:1.7; background:var(--paper); }
   .prev-tip { font-size:12px; color:var(--soft); margin-top:10px; line-height:1.6; }
+  /* photo cropper */
+  .crop-back { position:fixed; inset:0; z-index:200; background:rgba(38,33,29,.62); display:none; align-items:center; justify-content:center; padding:20px; }
+  .crop-back.on { display:flex; }
+  .crop-card { background:#fff; border-radius:18px; padding:26px; width:min(640px,100%); box-shadow:0 30px 80px rgba(0,0,0,.3); }
+  .crop-card h3 { font-family:'Outfit',sans-serif; font-weight:500; font-size:21px; margin-bottom:4px; }
+  .crop-card p { font-size:12.5px; color:var(--soft); margin-bottom:16px; }
+  .crop-stage { position:relative; margin:0 auto; overflow:hidden; border-radius:12px; background:#fff; border:1px solid var(--line); cursor:grab; touch-action:none;
+    background-image:linear-gradient(45deg,#f3eee8 25%,transparent 25%),linear-gradient(-45deg,#f3eee8 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f3eee8 75%),linear-gradient(-45deg,transparent 75%,#f3eee8 75%); background-size:20px 20px; background-position:0 0,0 10px,10px -10px,-10px 0; }
+  .crop-stage:active { cursor:grabbing; }
+  .crop-stage img { position:absolute; left:0; top:0; max-width:none; user-select:none; -webkit-user-drag:none; pointer-events:none; transform-origin:0 0; }
+  .crop-row { display:flex; align-items:center; gap:12px; margin-top:16px; flex-wrap:wrap; }
+  .crop-row input[type=range] { flex:1; min-width:160px; accent-color:var(--pink); }
+  .crop-row .lbl { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); }
   .meter { font-size:11.5px; color:var(--soft); display:flex; align-items:center; gap:8px; }
   .meter i { display:block; width:90px; height:5px; border-radius:5px; background:var(--line); overflow:hidden; }
   .meter i b { display:block; height:100%; background:var(--pink); }
@@ -164,6 +177,19 @@
     <p class="prev-tip" id="prevTip"></p>
   </div>
 </div>
+
+<div class="crop-back" id="cropBack">
+  <div class="crop-card">
+    <h3 id="cropTitle">Position the photo</h3>
+    <p>Drag the photo to move it. Use the slider (or scroll) to make it bigger or smaller inside the frame.</p>
+    <div class="crop-stage" id="cropStage"><img id="cropImg" alt=""></div>
+    <div class="crop-row"><span class="lbl">Size</span><input type="range" id="cropZoom" min="0" max="1000" value="0">
+      <button class="btn ghost tiny" id="cropFit" type="button">Show whole photo</button>
+      <button class="btn ghost tiny" id="cropFill" type="button">Fill the frame</button></div>
+    <div class="crop-row" style="justify-content:flex-end"><button class="btn ghost" id="cropCancel" type="button">Cancel</button><button class="btn pink" id="cropOk" type="button">Use photo</button></div>
+  </div>
+</div>
+<input id="blockPhotoIn" type="file" accept="image/*" style="display:none">
 
 <script src="assets/data/posts.js"></script>
 <script src="assets/data/catalog.js"></script>
@@ -299,9 +325,7 @@ function formHtml(p) {
     + '<div class="f"><label>Date</label><input id="c-date" type="date" value="' + esc(p.date) + '"></div>'
     + '<div class="f"><label>Cover photo</label><input id="c-cover" type="hidden" value="' + esc(p.cover) + '"><div class="sub" style="margin-top:0">Use the photo box above.</div></div></div>'
     + '<div class="f"><label>Excerpt (shown on the card)</label><textarea id="c-excerpt">' + esc(p.excerpt) + '</textarea></div>'
-    + '<div class="f"><label>Body</label><textarea id="c-body" class="tall">' + esc(bodyToText(p.body)) + '</textarea>'
-    + '<div class="sub">Leave a blank line between paragraphs. You can also click into the article on the right and type there.</div></div>'
-    + '<div class="mini-row"><button class="btn ghost tiny" id="bodyPhotoBtn" type="button">+ Add a photo into the article</button><input id="bodyPhotoIn" type="file" accept="image/*" style="display:none"></div>'
+    + '<div class="f"><label>Article</label><div class="hint" style="margin:0">Build the article <b>on the page to the right</b>: click the text and type, press <b>+ Add block</b> for headings, photos, photo with text, quotes and dividers. Hover a block to drag it up or down, and drag the pink corner of a photo to resize it.</div></div>'
     + '<div class="row2">'
     + '<div class="f"><label>YouTube link (optional)</label><input id="c-youtube" value="' + esc(p.youtube) + '" placeholder="https://youtu.be/..."></div>'
     + '<div class="f"><label>PDF path (optional)</label><input id="c-pdf" value="' + esc(p.pdf) + '" placeholder="assets/pdfs/catalog.pdf"></div></div>';
@@ -348,7 +372,8 @@ function renderForm(p) {
   $('#formCard').innerHTML =
     '<label class="drop' + (wide ? ' wide' : '') + '" id="drop">'
     + '<img id="pv-img" src="' + esc(src) + '" alt="" onerror="this.style.visibility=\'hidden\'" style="' + (src ? '' : 'visibility:hidden') + '">'
-    + '<div><b>' + (wide ? 'Cover photo' : 'Product photo') + '</b><span>Drop a photo here, or click to choose one from your computer. It is resized automatically.</span></div>'
+    + '<div><b>' + (wide ? 'Cover photo' : 'Product photo') + '</b><span>Drop a photo here, or click to choose one. You can then drag it into position and zoom.</span>'
+    + '<button class="btn ghost tiny" id="adjustBtn" type="button" style="margin-top:9px;' + (src ? '' : 'display:none') + '">Adjust position</button></div>'
     + '<input id="photoIn" type="file" accept="image/*"></label>'
     + formHtml(p)
     + '<div class="actions"><button class="btn pink" id="saveBtn">Save draft</button>'
@@ -367,36 +392,78 @@ function renderForm(p) {
 
   // photo: click or drag and drop
   const drop = $('#drop'), photoIn = $('#photoIn');
+  const cropOpts = wide ? { w: 1600, h: 800, title: 'Position the cover photo', q: 0.84 } : { w: 1100, h: 1100, title: 'Position the product photo', q: 0.88 };
   const takePhoto = async file => {
-    if (!file || !/^image\//.test(file.type)) return;
-    const url = await shrink(file, wide ? { max: 1600, fill: false, q: 0.84 } : { max: 1100, fill: true, q: 0.88 });
+    if (!file || (file.type && !/^image\//.test(file.type))) return;
+    const url = await cropPhoto(file, cropOpts);
+    if (!url) return;
+    $('#adjustBtn').style.display = '';
     ($('#c-img') || $('#c-cover')).value = url;
     const pv = $('#pv-img'); pv.src = url; pv.style.visibility = 'visible';
     save(true);
   };
-  photoIn.onchange = () => takePhoto(photoIn.files[0]);
+  photoIn.onchange = () => { takePhoto(photoIn.files[0]); photoIn.value = ''; };
+  $('#adjustBtn').onclick = async e => {
+    e.preventDefault(); e.stopPropagation();
+    const cur = ($('#c-img') || $('#c-cover')).value; if (!cur) return;
+    try { takePhoto(await (await fetch(cur)).blob()); } catch (err) { $('#status').textContent = 'That photo could not be opened for adjusting.'; }
+  };
   ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
   ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
   drop.addEventListener('drop', e => takePhoto(e.dataTransfer.files[0]));
 
-  // photo inside a blog article
-  const bp = $('#bodyPhotoBtn'), bpIn = $('#bodyPhotoIn');
-  if (bp) {
-    bp.onclick = () => bpIn.click();
-    bpIn.onchange = async () => {
-      const f = bpIn.files[0]; if (!f) return;
-      const key = 'p' + Date.now().toString(36);
-      PHOTOS[key] = await shrink(f, { max: 1400, fill: false, q: 0.84 });
-      const ta = $('#c-body'), pos = ta.selectionStart || ta.value.length;
-      ta.value = ta.value.slice(0, pos).replace(/\s*$/, '') + '\n\n[photo:' + key + ']\n\n' + ta.value.slice(pos).replace(/^\s*/, '');
-      bpIn.value = '';
-      save(true);
-    };
-  }
-
   // everything typed saves itself and refreshes the preview
   $('#formCard').querySelectorAll('input:not([type=file]):not([type=hidden]):not([disabled]), textarea, select')
     .forEach(el => el.addEventListener('input', autosave));
+}
+
+/* Cropper: drag to move, slider or wheel to zoom, inside a frame of the final shape. */
+function cropPhoto(file, o) {
+  return new Promise(resolve => {
+    const back = $('#cropBack'), stage = $('#cropStage'), img = $('#cropImg'), zoom = $('#cropZoom');
+    const FW = o.w >= o.h ? 560 : Math.round(560 * o.w / o.h), FH = Math.round(FW * o.h / o.w);
+    stage.style.width = FW + 'px'; stage.style.height = FH + 'px';
+    $('#cropTitle').textContent = o.title;
+    let s = 1, x = 0, y = 0, fit = 1, fill = 1, url = URL.createObjectURL(file);
+    const draw = () => { img.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')'; };
+    const clampPos = () => {                       // keep the photo from leaving the frame entirely
+      const w = img.naturalWidth * s, h = img.naturalHeight * s;
+      x = w >= FW ? Math.min(0, Math.max(FW - w, x)) : Math.min(FW - w, Math.max(0, x));
+      y = h >= FH ? Math.min(0, Math.max(FH - h, y)) : Math.min(FH - h, Math.max(0, y));
+    };
+    const setScale = (ns, cx, cy) => {             // zoom around a point
+      cx = cx === undefined ? FW / 2 : cx; cy = cy === undefined ? FH / 2 : cy;
+      x = cx - (cx - x) * ns / s; y = cy - (cy - y) * ns / s; s = ns; clampPos(); draw();
+      zoom.value = Math.round((Math.log(s / fit) / Math.log(fill * 4 / fit)) * 1000);
+    };
+    const centre = ns => { s = ns; x = (FW - img.naturalWidth * s) / 2; y = (FH - img.naturalHeight * s) / 2; setScale(ns); };
+    img.onload = () => {
+      fit = Math.min(FW / img.naturalWidth, FH / img.naturalHeight); fill = Math.max(FW / img.naturalWidth, FH / img.naturalHeight);
+      centre(o.w === o.h ? fit : fill);            // products show the whole jar, covers fill the frame
+      back.classList.add('on');
+    };
+    img.onerror = () => { close(null); };
+    img.src = url;
+    zoom.oninput = () => setScale(fit * Math.pow(fill * 4 / fit, zoom.value / 1000));
+    $('#cropFit').onclick = () => centre(fit);
+    $('#cropFill').onclick = () => centre(fill);
+    stage.onwheel = e => { e.preventDefault(); const r = stage.getBoundingClientRect(); setScale(Math.min(fill * 4, Math.max(fit * 0.5, s * (e.deltaY < 0 ? 1.06 : 0.94))), e.clientX - r.left, e.clientY - r.top); };
+    stage.onpointerdown = e => {
+      stage.setPointerCapture(e.pointerId); const sx = e.clientX - x, sy = e.clientY - y;
+      stage.onpointermove = m => { x = m.clientX - sx; y = m.clientY - sy; clampPos(); draw(); };
+      stage.onpointerup = () => { stage.onpointermove = null; };
+    };
+    function close(result) { back.classList.remove('on'); URL.revokeObjectURL(url); resolve(result); }
+    $('#cropCancel').onclick = () => close(null);
+    $('#cropOk').onclick = () => {
+      const c = document.createElement('canvas'); c.width = o.w; c.height = o.h;
+      const g = c.getContext('2d'), f = o.w / FW;
+      g.fillStyle = '#fff'; g.fillRect(0, 0, o.w, o.h);
+      g.imageSmoothingQuality = 'high';
+      g.drawImage(img, x * f, y * f, img.naturalWidth * s * f, img.naturalHeight * s * f);
+      close(c.toDataURL('image/jpeg', o.q));
+    };
+  });
 }
 
 /* Resize a chosen photo in the browser so it is web-ready (and small enough to keep in the draft). */
@@ -447,7 +514,7 @@ function collect() {
     id: (!isNew && currentId) || slugify(v('c-title')) || 'post-' + Date.now(),
     title: v('c-title'), date: v('c-date') || new Date().toISOString().slice(0, 10),
     tag: v('c-tag'), cover: v('c-cover'), excerpt: v('c-excerpt'),
-    body: textToBody($('#c-body').value), youtube: v('c-youtube'), pdf: v('c-pdf')
+    body: BODY, youtube: v('c-youtube'), pdf: v('c-pdf')
   };
   if (TAB === 'masks') return {
     code: v('c-code'), name: v('c-name'), dot: v('c-dot'), tags: v('c-tags'),
@@ -464,7 +531,7 @@ function collect() {
   return { code: v('c-code'), name: v('c-name'), img: v('c-img'), desc: v('c-desc') };
 }
 
-let isNew = true, autoTimer = null;
+let isNew = true, autoTimer = null, BODY = '';
 function autosave() { clearTimeout(autoTimer); autoTimer = setTimeout(() => save(true), 450); }
 
 function save(quiet) {
@@ -505,7 +572,7 @@ function load(id) {
   const cfg = CFG[TAB];
   const p = DATA[TAB].find(x => String(x[cfg.idKey]) === String(id));
   if (!p) return;
-  currentId = id; isNew = false;
+  currentId = id; isNew = false; BODY = TAB === 'posts' ? (p.body || '') : '';
   $('#formTitle').textContent = 'Edit: ' + (p.title || p.name);
   renderForm(p);
   renderList();
@@ -513,7 +580,7 @@ function load(id) {
 }
 
 function newItem() {
-  currentId = null; isNew = true; PHOTOS = {};
+  currentId = null; isNew = true; PHOTOS = {}; BODY = '';
   $('#formTitle').textContent = 'New ' + CFG[TAB].title.replace(/s$/, '');
   renderForm(CFG[TAB].blank());
   renderList();
@@ -541,7 +608,7 @@ function refreshPreview(top) {
   const url = pageUrl();
   $('#prevEmpty').style.display = url ? 'none' : 'flex';
   $('#prevTip').textContent = !url ? '' : TAB === 'posts'
-    ? 'Tip: click the title or the article text in the preview and type straight onto the page. Click the cover to change the photo.'
+    ? 'Tip: type straight onto the page. Hover a block for its toolbar: drag the grip to move it, drag a photo corner to resize, + Add block for more.'
     : 'Tip: hover over the preview and click any highlighted part (photo, name, description) to jump to where you edit it.';
   if (!url) { prev.removeAttribute('src'); return; }
   try { keepScroll = top ? 0 : (prev.contentWindow.scrollY || 0); } catch (e) { keepScroll = 0; }
@@ -563,7 +630,7 @@ prev.addEventListener('load', () => {
   // which part of the page belongs to which field
   const MAP = TAB === 'posts'
     ? [['.article h1', 'c-title', 'Title (type here)', 'text'], ['.a-cover', 'photo', 'Change cover photo'], ['.a-meta', 'c-tag', 'Tag and date'],
-       ['.a-body', 'c-body', 'Article (type here)', 'html'], ['.a-video', 'c-youtube', 'YouTube link'], ['.a-pdf', 'c-pdf', 'PDF']]
+       ['.a-video', 'c-youtube', 'YouTube link'], ['.a-pdf', 'c-pdf', 'PDF']]
     : [['.gallery', 'photo', 'Change photo'], ['.info h1', 'c-name', 'Name'], ['.info .subtitle', 'c-name', 'Name'], ['.info .lead', 'c-desc', 'Description'],
        ['.info .b-row', 'c-tags', 'Benefit pair'], ['.spec', 'c-tags', 'Benefit pair']];
   MAP.forEach(m => d.querySelectorAll(m[0]).forEach(el => { el.dataset.cms = m[1]; el.dataset.cmsLabel = m[2]; if (m[3]) el.dataset.cmsEdit = m[3]; }));
@@ -593,19 +660,208 @@ prev.addEventListener('load', () => {
     if (field) { field.scrollIntoView({ behavior: 'smooth', block: 'center' }); field.focus(); field.classList.remove('flash'); void field.offsetWidth; field.classList.add('flash'); }
   }, true);
 
-  // blog title and article can be typed straight onto the page
+  if (TAB === 'posts') initBuilder(d);
+
+  // blog title can be typed straight onto the page
   d.querySelectorAll('[data-cms-edit]').forEach(el => {
     el.contentEditable = el.dataset.cmsEdit === 'text' ? 'plaintext-only' : 'true';
     if (el.contentEditable !== 'plaintext-only' && el.dataset.cmsEdit === 'text') el.contentEditable = 'true';
     el.addEventListener('input', () => {
       const p = DATA.posts.find(x => String(x.id) === String(currentId)); if (!p) return;
       if (el.dataset.cmsEdit === 'text') { p.title = el.textContent.trim(); $('#c-title').value = p.title; }
-      else { p.body = el.innerHTML; $('#c-body').value = bodyToText(p.body); }
       persist(); renderList();
       $('#status').textContent = 'Draft saved from the page.';
     });
   });
 });
+/* ---------------- article builder: blocks you can type in, drag, resize and rearrange ---------------- */
+function initBuilder(d) {
+  const win = d.defaultView, body = d.querySelector('.a-body');
+  const post = DATA.posts.find(x => String(x.id) === String(currentId));
+  if (!body || !post) return;
+
+  const st = d.createElement('style');
+  st.textContent = `
+    .a-body > *, .a-split-text { position:relative; }
+    .a-body > .cms-blk { outline:1.5px dashed transparent; outline-offset:6px; border-radius:4px; transition:outline-color .15s; }
+    .a-body > .cms-blk:hover, .a-body > .cms-blk.cms-on { outline-color:#E2007E; }
+    .a-body [contenteditable]:focus { outline:none; }
+    .a-body [contenteditable][data-ph]:empty::before { content:attr(data-ph); color:#C9B9C0; }
+    .a-body p[contenteditable]:empty, .a-body h3[contenteditable]:empty { min-height:1.4em; }
+    .cms-bar { position:absolute; z-index:9000; display:none; gap:2px; background:#26211D; border-radius:9px; padding:4px; box-shadow:0 8px 22px rgba(0,0,0,.25); }
+    .cms-bar button { all:unset; cursor:pointer; color:#fff; font:600 13px/1 'DM Sans',sans-serif; min-width:28px; height:28px; padding:0 7px; border-radius:6px; text-align:center; box-sizing:border-box; }
+    .cms-bar button:hover { background:#E2007E; }
+    .cms-bar .grip { cursor:grab; letter-spacing:-2px; }
+    .cms-bar i { width:1px; background:rgba(255,255,255,.22); margin:4px 3px; }
+    .cms-rs { position:absolute; right:-9px; bottom:-9px; width:20px; height:20px; border-radius:50%; background:#E2007E; border:3px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.3); cursor:nwse-resize; z-index:5; touch-action:none; }
+    .cms-size { position:absolute; right:14px; bottom:14px; background:#26211D; color:#fff; font:600 11px/1 'DM Sans',sans-serif; padding:5px 8px; border-radius:6px; display:none; }
+    .cms-line { position:absolute; left:0; right:0; height:3px; background:#E2007E; border-radius:3px; z-index:8000; display:none; pointer-events:none; }
+    .cms-add { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:28px 0 10px; padding:14px; border:1.5px dashed #E8C9D6; border-radius:12px; background:#FFF8FB; }
+    .cms-add span { font:600 11px/1 'DM Sans',sans-serif; letter-spacing:.14em; text-transform:uppercase; color:#A61E60; margin-right:4px; }
+    .cms-add button { all:unset; cursor:pointer; font:500 13px/1 'DM Sans',sans-serif; color:#26211D; background:#fff; border:1px solid #E8C9D6; border-radius:999px; padding:9px 15px; }
+    .cms-add button:hover { background:#E2007E; border-color:#E2007E; color:#fff; }
+    .cms-dragging { opacity:.35; }
+    .a-body.cms-filedrop { outline:2px dashed #E2007E; outline-offset:10px; }`;
+  d.head.appendChild(st);
+
+  const UI = 'cms-ui';
+  const mk = (tag, cls, html) => { const e = d.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; };
+  const blocks = () => [...body.children].filter(e => !e.classList.contains(UI));
+  const PH = { P: 'Type some text...', H3: 'Heading', BLOCKQUOTE: 'A quote or highlight...' };
+
+  function dress(el) {                                  // make one block editable
+    el.classList.add('cms-blk');
+    if (PH[el.tagName]) { el.contentEditable = 'true'; el.dataset.ph = PH[el.tagName]; }
+    if (el.classList.contains('a-split')) el.querySelectorAll('.a-split-text').forEach(x => { x.contentEditable = 'true'; x.dataset.ph = 'Text beside the photo...'; });
+    if (el.matches('figure.a-photo') && !el.querySelector('.cms-rs')) { el.appendChild(mk('div', UI + ' cms-rs')); el.appendChild(mk('div', UI + ' cms-size')); }
+  }
+  // tidy whatever is there into blocks
+  [...body.childNodes].forEach(n => { if (n.nodeType === 3) { if (n.nodeValue.trim()) { const p = mk('p'); p.textContent = n.nodeValue.trim(); body.replaceChild(p, n); } else n.remove(); } });
+  if (!blocks().length) body.appendChild(mk('p'));
+  blocks().forEach(dress);
+
+  function commit() {
+    const c = body.cloneNode(true);
+    c.querySelectorAll('.' + UI).forEach(e => e.remove());
+    c.querySelectorAll('*').forEach(e => {
+      e.removeAttribute('contenteditable'); e.removeAttribute('data-ph'); e.removeAttribute('spellcheck');
+      e.classList.remove('cms-blk', 'cms-on', 'cms-dragging'); if (!e.getAttribute('class')) e.removeAttribute('class');
+    });
+    [...c.children].forEach(e => { if (/^(P|H3|BLOCKQUOTE)$/.test(e.tagName) && !e.textContent.trim() && !e.querySelector('img')) e.remove(); });
+    BODY = post.body = c.innerHTML.trim();
+    if (persist()) $('#status').textContent = 'Draft saved from the page.';
+  }
+
+  // ----- add blocks -----
+  const pickPhoto = () => new Promise(res => { const inp = $('#blockPhotoIn'); inp.value = ''; inp.onchange = async () => res(inp.files[0] ? await shrink(inp.files[0], { max: 1500, fill: false, q: 0.84 }) : null); inp.click(); });
+  const figure = src => { const f = mk('figure', 'a-photo'); f.dataset.k = 'p' + Date.now().toString(36); f.dataset.align = 'center'; f.style.width = '80%'; f.innerHTML = '<img src="' + src + '" alt="">'; return f; };
+  async function addBlock(kind, after) {
+    let el;
+    if (kind === 'text') el = mk('p');
+    if (kind === 'heading') el = mk('h3');
+    if (kind === 'quote') el = mk('blockquote');
+    if (kind === 'divider') el = mk('hr', 'a-div');
+    if (kind === 'photo') { const src = await pickPhoto(); if (!src) return; el = figure(src); }
+    if (kind === 'split') { const src = await pickPhoto(); if (!src) return; el = mk('div', 'a-split'); const f = figure(src); f.style.width = ''; el.appendChild(f); el.appendChild(mk('div', 'a-split-text', '<p></p>')); }
+    const ref = after ? after.nextSibling : addRow;
+    body.insertBefore(el, ref && ref.parentNode === body ? ref : null);
+    if (addRow.parentNode === body) body.appendChild(addRow);
+    dress(el); commit();
+    const ed = el.isContentEditable ? el : el.querySelector('[contenteditable]'); if (ed) ed.focus();
+    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+  const addRow = mk('div', UI + ' cms-add', '<span>+ Add block</span>' + [['text', 'Text'], ['heading', 'Heading'], ['photo', 'Photo'], ['split', 'Photo + text'], ['quote', 'Quote'], ['divider', 'Divider']].map(b => '<button data-k="' + b[0] + '">' + b[1] + '</button>').join(''));
+  addRow.contentEditable = 'false';
+  body.appendChild(addRow);
+  addRow.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { e.preventDefault(); e.stopPropagation(); addBlock(b.dataset.k, blocks().pop()); } }, true);
+
+  // ----- hover toolbar -----
+  const bar = mk('div', 'cms-bar'); d.body.appendChild(bar);
+  const line = mk('div', 'cms-line'); d.body.appendChild(line);
+  let cur = null, hideT = null;
+  function showBar(el) {
+    if (dragging || resizing) return;
+    clearTimeout(hideT);
+    if (cur && cur !== el) cur.classList.remove('cms-on');
+    cur = el; el.classList.add('cms-on');
+    const isFig = el.matches('figure.a-photo'), isSplit = el.classList.contains('a-split'), isText = /^(P|H3)$/.test(el.tagName);
+    bar.innerHTML = '<button class="grip" data-a="drag" title="Drag to move">⋮⋮</button><button data-a="up" title="Move up">↑</button><button data-a="down" title="Move down">↓</button><i></i>'
+      + (isText ? '<button data-a="b" title="Bold"><b>B</b></button><button data-a="i" title="Italic"><em>I</em></button><button data-a="h" title="Switch heading / text">' + (el.tagName === 'H3' ? 'Text' : 'Heading') + '</button><i></i>' : '')
+      + (isFig ? '<button data-a="al" title="Left">⇤</button><button data-a="ac" title="Centre">↔</button><button data-a="ar" title="Right">⇥</button><button data-a="rep" title="Replace photo">Replace</button><i></i>' : '')
+      + (isSplit ? '<button data-a="swap" title="Swap sides">⇄ Swap</button><button data-a="rep" title="Replace photo">Replace</button><i></i>' : '')
+      + '<button data-a="dup" title="Duplicate">⧉</button><button data-a="del" title="Delete">✕</button>';
+    const r = el.getBoundingClientRect();
+    bar.style.display = 'flex';
+    bar.style.left = Math.max(8, r.left + win.scrollX) + 'px';
+    bar.style.top = Math.max(win.scrollY + 4, r.top + win.scrollY - 44) + 'px';
+  }
+  function hideBarSoon() { clearTimeout(hideT); hideT = setTimeout(() => { if (dragging) return; bar.style.display = 'none'; if (cur) cur.classList.remove('cms-on'); }, 260); }
+  body.addEventListener('mouseover', e => { const el = e.target.closest('.cms-blk'); if (el && el.parentNode === body) showBar(el); });
+  body.addEventListener('mouseleave', hideBarSoon);
+  bar.addEventListener('mouseenter', () => clearTimeout(hideT));
+  bar.addEventListener('mouseleave', hideBarSoon);
+  body.addEventListener('focusin', e => { const el = e.target.closest('.cms-blk'); if (el && el.parentNode === body) showBar(el); });
+
+  bar.addEventListener('mousedown', e => { if (!e.target.closest('[data-a="drag"]')) e.preventDefault(); });   // keep the text selection
+  bar.addEventListener('click', async e => {
+    const b = e.target.closest('button'); if (!b || !cur) return;
+    e.preventDefault(); e.stopPropagation();
+    const a = b.dataset.a, el = cur, list = blocks(), i = list.indexOf(el);
+    if (a === 'up' && i > 0) body.insertBefore(el, list[i - 1]);
+    if (a === 'down' && i < list.length - 1) body.insertBefore(list[i + 1], el);
+    if (a === 'b') d.execCommand('bold');
+    if (a === 'i') d.execCommand('italic');
+    if (a === 'h') { const n = mk(el.tagName === 'H3' ? 'p' : 'h3'); n.innerHTML = el.innerHTML; body.replaceChild(n, el); dress(n); cur = n; n.focus(); }
+    if (a === 'al' || a === 'ac' || a === 'ar') el.dataset.align = { al: 'left', ac: 'center', ar: 'right' }[a];
+    if (a === 'swap') el.classList.toggle('rev');
+    if (a === 'rep') { const src = await pickPhoto(); if (src) el.querySelector('img').src = src; }
+    if (a === 'dup') { const c = el.cloneNode(true); if (c.dataset.k) c.dataset.k = 'p' + Date.now().toString(36); body.insertBefore(c, el.nextSibling); dress(c); }
+    if (a === 'del') { el.remove(); bar.style.display = 'none'; cur = null; if (!blocks().length) { const p = mk('p'); body.insertBefore(p, addRow); dress(p); } }
+    commit(); if (cur && cur.parentNode) showBar(cur);
+  }, true);
+
+  // ----- drag a block to a new place -----
+  let dragging = null, resizing = null;
+  bar.addEventListener('pointerdown', e => {
+    if (!e.target.closest('[data-a="drag"]') || !cur) return;
+    e.preventDefault(); dragging = cur; dragging.classList.add('cms-dragging'); bar.style.display = 'none';
+    let target = null;
+    const move = m => {
+      const list = blocks().filter(x => x !== dragging);
+      target = list.find(x => { const r = x.getBoundingClientRect(); return m.clientY < r.top + r.height / 2; }) || null;
+      const refR = target ? target.getBoundingClientRect() : (list.length ? list[list.length - 1].getBoundingClientRect() : body.getBoundingClientRect());
+      const br = body.getBoundingClientRect();
+      line.style.display = 'block'; line.style.left = (br.left + win.scrollX) + 'px'; line.style.width = br.width + 'px'; line.style.right = 'auto';
+      line.style.top = ((target ? refR.top - 9 : refR.bottom + 7) + win.scrollY) + 'px';
+      if (m.clientY < 90) win.scrollBy(0, -16); else if (m.clientY > win.innerHeight - 90) win.scrollBy(0, 16);
+    };
+    const up = () => {
+      d.removeEventListener('pointermove', move); d.removeEventListener('pointerup', up);
+      line.style.display = 'none'; dragging.classList.remove('cms-dragging');
+      body.insertBefore(dragging, target || addRow); dragging = null; commit();
+    };
+    d.addEventListener('pointermove', move); d.addEventListener('pointerup', up);
+  });
+
+  // ----- drag a photo corner to resize it -----
+  body.addEventListener('pointerdown', e => {
+    const h = e.target.closest('.cms-rs'); if (!h) return;
+    e.preventDefault(); const fig = h.parentNode, tag = fig.querySelector('.cms-size');
+    const startX = e.clientX, startW = fig.getBoundingClientRect().width, full = body.getBoundingClientRect().width;
+    const k = (fig.dataset.align || 'center') === 'center' ? 2 : 1;
+    resizing = fig; bar.style.display = 'none'; tag.style.display = 'block';
+    const move = m => { const pct = Math.max(20, Math.min(100, Math.round(((startW + (m.clientX - startX) * k) / full) * 100))); fig.style.width = pct + '%'; tag.textContent = pct + '% wide'; };
+    const up = () => { d.removeEventListener('pointermove', move); d.removeEventListener('pointerup', up); tag.style.display = 'none'; resizing = null; commit(); };
+    d.addEventListener('pointermove', move); d.addEventListener('pointerup', up);
+  });
+
+  // ----- typing: Enter starts a new block, Backspace on an empty one removes it -----
+  body.addEventListener('keydown', e => {
+    const el = e.target.closest && e.target.closest('.cms-blk'); if (!el || el.parentNode !== body || !PH[el.tagName]) return;
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); const p = mk('p'); body.insertBefore(p, el.nextSibling); dress(p); p.focus(); commit(); }
+    if (e.key === 'Backspace' && !el.textContent && blocks().length > 1) {
+      e.preventDefault(); const list = blocks(), prev = list[list.indexOf(el) - 1]; el.remove();
+      const ed = prev && (prev.isContentEditable ? prev : prev.querySelector('[contenteditable]'));
+      if (ed) { ed.focus(); const s = win.getSelection(); s.selectAllChildren(ed); s.collapseToEnd(); }
+      commit();
+    }
+  });
+  body.addEventListener('input', commit);
+  body.addEventListener('paste', e => { e.preventDefault(); d.execCommand('insertText', false, (e.clipboardData || win.clipboardData).getData('text/plain')); });
+
+  // ----- drop a photo file straight onto the article -----
+  body.addEventListener('dragover', e => { if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')) { e.preventDefault(); body.classList.add('cms-filedrop'); } });
+  body.addEventListener('dragleave', () => body.classList.remove('cms-filedrop'));
+  body.addEventListener('drop', async e => {
+    const f = e.dataTransfer && e.dataTransfer.files[0]; body.classList.remove('cms-filedrop');
+    if (!f || !/^image\//.test(f.type)) return;
+    e.preventDefault();
+    const after = blocks().filter(x => x.getBoundingClientRect().top + x.getBoundingClientRect().height / 2 < e.clientY).pop();
+    const fig = figure(await shrink(f, { max: 1500, fill: false, q: 0.84 }));
+    body.insertBefore(fig, after ? after.nextSibling : blocks()[0] || addRow); dress(fig); commit();
+  });
+}
+
 document.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
   document.querySelectorAll('.seg button').forEach(x => x.classList.remove('on'));
   b.classList.add('on'); DEVICE = b.dataset.dev; fitPreview(); refreshPreview();
@@ -646,8 +902,8 @@ $('#publishBtn').onclick = () => {
   out.skincare.forEach(p => { p.img = lift(p.img, 'assets/uploads/skincare-' + slugify(p.slug) + '.jpg'); });
   out.posts.forEach(p => {
     p.cover = lift(p.cover, 'assets/uploads/post-' + slugify(p.id) + '-cover.jpg');
-    p.body = String(p.body || '').replace(/(<figure class="a-photo" data-k=")([^"]+)("><img src=")(data:image\/[^"]+)(")/g,
-      (m, a, k, b, url, c) => a + k + b + lift(url, 'assets/uploads/post-' + slugify(p.id) + '-' + k + '.jpg') + c);
+    let n = 0;
+    p.body = String(p.body || '').replace(/src="(data:image\/[^"]+)"/g, (m, url) => 'src="' + lift(url, 'assets/uploads/post-' + slugify(p.id) + '-' + (++n) + '.jpg') + '"');
   });
   files.unshift(
     { name: 'assets/data/posts.js', data: enc.encode('/* Beauty Resource posts. Exported from cms.html. */\nwindow.EM_POSTS = ' + JSON.stringify(out.posts, null, 1) + ';\n') },
