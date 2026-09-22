@@ -419,3 +419,55 @@ h3, h4, h5, h6, .fact h4, .pdrn-pt h4, .pdrn-chip.note h4 { font-weight: 600; le
 .cat-card:not(.feature):hover { background: #E2007E !important; border-color: #E2007E !important; box-shadow: 0 18px 34px rgba(166, 30, 96, 0.22); }
 .cat-card:not(.feature):hover h3, .cat-card:not(.feature):hover p { color: #fff; }
 .cat-card:not(.feature):hover span { color: #fff; border-bottom-color: rgba(255, 255, 255, 0.7); }
+
+
+/* ============================================================
+   ALL CARDS: whitish with a thin rose border, Esthemax pink on hover
+   (same treatment as the category cards)
+   ============================================================ */
+.jelly-card, .pcard, .prod, .rel-card, .why-card, .post-card {
+  background: #FFFCFD !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+  text-align: center;
+  color: var(--ink);
+  box-shadow: none;
+  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+}
+.jelly-card, .pcard, .prod, .rel-card { padding: 22px 22px 26px; }
+.why-card { padding: 44px 34px; background: #FFFCFD !important; }
+.why-card svg { stroke: #E2007E; }
+.why-card h3 { color: var(--ink); }
+.why-card p { color: var(--soft); }
+.post-card { padding: 0; text-align: left; }
+.post-card .pc-body, .post-card .pc-in { padding: 22px; }
+
+/* photo panels inside stay white */
+.jelly-media, .prod-media, .prod-media.is-pack, .pcard .media, .rel-card .rc-media { background: #fff; border-radius: 12px; }
+.pcard .media { margin: 0; }
+.pcard .body { padding: 20px 0 0; text-align: center; }
+.pcard .meta { justify-content: center; }
+.pcard:hover .media, .rel-card:hover .rc-media { transform: none; }
+.prod-meta { text-align: center; }
+.rel-card .rc-media { margin: 0 0 18px; }
+
+/* text and links */
+.jelly-card h3, .pcard h3, .pcard h3 a, .prod-meta h3, .prod-meta h3 a, .rel-card h3, .post-card h3 { color: var(--ink); transition: color 0.35s ease; }
+.jelly-card p, .pcard .desc, .pcard .concerns, .pcard .code, .pcard .meta, .prod-tags, .rel-card p, .post-card p, .post-card .pc-date { color: var(--soft); transition: color 0.35s ease; }
+.pcard .view, .prod-link, .rel-card span, .pc-more { color: #E2007E; border-color: #E2007E; transition: color 0.35s ease, border-color 0.35s ease; }
+
+/* hover: fills Esthemax pink */
+.jelly-card:hover, .pcard:hover, .prod:hover, .rel-card:hover, .why-card:hover, .post-card:hover {
+  background: #E2007E !important;
+  border-color: #E2007E !important;
+  transform: none;
+  box-shadow: 0 18px 34px rgba(166, 30, 96, 0.22);
+}
+.jelly-card:hover h3, .pcard:hover h3, .pcard:hover h3 a, .prod:hover .prod-meta h3, .prod:hover .prod-meta h3 a, .rel-card:hover h3, .why-card:hover h3, .post-card:hover h3,
+.jelly-card:hover p, .pcard:hover .desc, .pcard:hover .concerns, .pcard:hover .code, .pcard:hover .meta, .pcard:hover .meta *, .prod:hover .prod-tags, .rel-card:hover p, .why-card:hover p, .post-card:hover p, .post-card:hover .pc-date, .post-card:hover .pc-tag, .post-card:hover .pc-kind {
+  color: #fff;
+}
+.why-card:hover svg { stroke: #fff; }
+.pcard:hover .view, .prod:hover .prod-link, .rel-card:hover span, .post-card:hover .pc-more { color: #fff; border-color: rgba(255, 255, 255, 0.7); }
+.pcard .view { display: inline-block; margin: 14px auto 0; }
