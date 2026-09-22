@@ -285,15 +285,17 @@
   .lh-link:hover { gap: 14px; opacity: 0.8; }
   @media (max-width: 820px) {
     /* phone: copy on top, smaller scene at the bottom so the wordmark still fits behind her */
-    .lady-hero { --hh: clamp(600px, 88svh, 820px); --sh: 112vw; background: linear-gradient(180deg, #57141F 0%, #4B111A 100%); }
+    /* phone: centred copy in normal flow on top, the photo scene reserved below it, so the two never overlap */
+    .lady-hero { --sh: 112vw; height: auto; padding-top: 44px; background: linear-gradient(180deg, #57141F 0%, #4B111A 100%); }
+    .lady-hero::after { content: ''; display: block; height: var(--sh); }
     .lh-layer { transform: translateX(-57%) scale(1.07); }
     .lady-hero.go .lh-layer { transform: translateX(-57%) scale(1); }
     .lh-bg { -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 34%); mask-image: linear-gradient(180deg, transparent 0%, #000 34%); }
     .lh-word { font-size: 18.4vw; bottom: calc(var(--sh) * 0.655); }   /* rises from behind her hair */
-    .lh-copy.left { top: 6.5vh; bottom: auto; left: 24px; right: 24px; max-width: none; }
+    .lh-copy.left { position: relative; top: auto; bottom: auto; left: auto; right: auto; max-width: none; text-align: center; padding: 0 24px 26px; }
     .lh-copy.right { display: none; }
     .lh-copy h1 { font-size: 30px; margin-bottom: 14px; }
-    .lh-sub.m { display: block; font-size: 14.5px; margin-bottom: 22px; max-width: 360px; }
+    .lh-sub.m { display: block; font-size: 14.5px; margin: 0 auto 22px; max-width: 360px; }
     .lh-copy .btn-pink { font-size: 10.5px; letter-spacing: 0.14em; padding: 13px 24px; }
   }
 
@@ -614,7 +616,7 @@
   }
 </style>
 <link rel="stylesheet" href="assets/reveal.css?v=3">
-<link rel="stylesheet" href="assets/theme.css?v=12">
+<link rel="stylesheet" href="assets/theme.css?v=13">
 </head>
 <body>
 
