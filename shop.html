@@ -33,43 +33,36 @@
   .hicon svg { width: 18px; height: 18px; stroke: var(--ink); fill: none; stroke-width: 1.5; }
 
   /* video hero */
-  .shop-hero {
-    position: relative;
-    overflow: hidden;
-    min-height: clamp(460px, 78vh, 760px);
-    display: flex;
-    align-items: flex-end;
-    background: #E9E4D5;
-  }
-  .shop-hero video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-  .shop-hero .veil {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(23,19,14,0) 30%, rgba(23,19,14,0.14) 62%, rgba(23,19,14,0.52) 100%),
-                linear-gradient(90deg, rgba(23,19,14,0.36) 0%, rgba(23,19,14,0) 55%);
-  }
+  /* ---------- hero slider ---------- */
+  .shop-hero { position: relative; overflow: hidden; height: clamp(460px, 78vh, 760px); background: #F1EBE6; }
+  .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.1s ease; pointer-events: none; }
+  .slide.on { opacity: 1; pointer-events: auto; z-index: 1; }
+  .slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% center; transform: scale(1.06); transition: transform 7s linear; }
+  .slide.on img { transform: scale(1); }
+  .slide .veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,250,248,0.72) 0%, rgba(255,250,248,0.35) 34%, rgba(255,250,248,0) 58%); }
   .hero-copy {
-    position: relative;
-    z-index: 2;
-    padding: clamp(40px, 7vh, 76px) clamp(24px, 4.5vw, 72px);
-    max-width: 700px;
-    color: #FAF5EA;
-    opacity: 0;
-    transform: translateY(26px);
-    animation: heroIn 1.1s cubic-bezier(0.2, 0.6, 0.2, 1) 0.9s forwards;
+    position: absolute; left: 0; bottom: 0; z-index: 2;
+    padding: clamp(40px, 7vh, 76px) clamp(24px, 4.5vw, 72px) clamp(70px, 11vh, 100px);
+    max-width: 640px; color: var(--ink);
   }
-  @keyframes heroIn { to { opacity: 1; transform: translateY(0); } }
-  .hero-copy .eyebrow { font-size: 11.5px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(250,245,234,0.85); margin-bottom: 20px; }
-  .hero-copy h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 400; font-size: clamp(40px, 4.6vw, 68px); line-height: 1.04; text-transform: uppercase; letter-spacing: 0.01em; margin-bottom: 20px; }
-  .hero-copy .sub { font-size: 17px; font-weight: 300; color: rgba(250,245,234,0.85); margin-bottom: 30px; max-width: 560px; }
-  .text-link { display: inline-flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; padding-bottom: 5px; border-bottom: 1px solid #FAF5EA; color: #FAF5EA; transition: gap 0.3s ease, opacity 0.3s ease; }
+  .hero-copy > * { opacity: 0; transform: translateY(22px); transition: opacity 0.9s cubic-bezier(0.2,0.6,0.2,1), transform 0.9s cubic-bezier(0.2,0.6,0.2,1); }
+  .slide.on .hero-copy > * { opacity: 1; transform: none; }
+  .slide.on .hero-copy > :nth-child(2) { transition-delay: 0.12s; }
+  .slide.on .hero-copy > :nth-child(3) { transition-delay: 0.24s; }
+  .slide.on .hero-copy > :nth-child(4) { transition-delay: 0.36s; }
+  .hero-copy .eyebrow { font-size: 11.5px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--pink); margin-bottom: 18px; }
+  .hero-copy h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 500; font-size: clamp(38px, 4.4vw, 64px); line-height: 1.04; margin-bottom: 18px; }
+  .hero-copy .sub { font-size: 16.5px; color: var(--soft); margin-bottom: 30px; max-width: 480px; line-height: 1.7; }
+  .hero-ctas { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+  .slider-nav { position: absolute; z-index: 3; left: clamp(24px, 4.5vw, 72px); bottom: clamp(26px, 4.5vh, 40px); display: flex; align-items: center; gap: 14px; }
+  .slider-nav button { all: unset; cursor: pointer; }
+  .slider-nav .arrow { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--ink); display: inline-flex; align-items: center; justify-content: center; color: var(--ink); transition: background 0.3s ease, color 0.3s ease; }
+  .slider-nav .arrow:hover { background: var(--pink); border-color: var(--pink); color: #fff; }
+  .slider-nav .arrow svg { width: 16px; height: 16px; }
+  .dots { display: flex; gap: 8px; margin: 0 6px; }
+  .dots button { width: 8px; height: 8px; border-radius: 50%; background: rgba(42,34,38,0.28); transition: background 0.3s ease, transform 0.3s ease; }
+  .dots button.on { background: var(--pink); transform: scale(1.3); }
+  .text-link { display: inline-flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; padding-bottom: 5px; border-bottom: 1px solid var(--ink); color: var(--ink); transition: gap 0.3s ease, opacity 0.3s ease; }
   .text-link:hover { gap: 14px; opacity: 0.75; }
 
   /* sections */
@@ -118,7 +111,15 @@
     .header-in, .section, .news-in, .footer-in { padding-left: 20px; padding-right: 20px; }
     .cat-grid { grid-template-columns: 1fr 1fr; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
-    .shop-hero { min-height: 62vh; }
+    .shop-hero { height: auto; min-height: 0; display: flex; flex-direction: column; }
+    .slide { position: relative; display: none; opacity: 1; }
+    .slide.on { display: block; }
+    .slide img { position: relative; height: 62vw; object-position: 70% center; transform: none; }
+    .slide .veil { display: none; }
+    .hero-copy { position: relative; padding: 26px 22px 18px; max-width: none; text-align: center; }
+    .hero-copy .sub { margin-left: auto; margin-right: auto; }
+    .hero-ctas { justify-content: center; }
+    .slider-nav { position: relative; left: auto; bottom: auto; justify-content: center; padding: 0 0 30px; }
   }
 </style>
 <link rel="stylesheet" href="assets/reveal.css?v=3">
@@ -144,21 +145,56 @@
 </header>
 
 <!-- ===== video hero: plays once, rests on the jar ===== -->
-<section class="shop-hero">
-  <video id="heroVideo" autoplay muted playsinline preload="auto" poster="assets/banners/shop-hero-salmon-poster.jpg" aria-label="Pink jelly cascading over the Salmon DNA PDRN Hydrojelly jar">
-    <source src="assets/banners/shop-hero-salmon.mp4" type="video/mp4">
-  </video>
-  <div class="veil"></div>
-  <div class="hero-copy">
-    <p class="eyebrow">The Collection &middot; New Formula</p>
-    <h1>Salmon<br>DNA PDRN</h1>
-    <p class="sub">Advanced skin repair and regeneration. A low molecular weight DNA extract that wakes the skin at a cellular level. Repair. Renew. Glow.</p>
-    <div style="display:flex; align-items:center; gap:26px; flex-wrap:wrap;">
-      <a class="btn-pink" href="product.html?id=805">Discover the Formula</a>
-      <a class="text-link" href="hydrojelly-collection.html">All 38 Hydrojelly Masks
-        <svg width="16" height="10" viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m13 1 4 4-4 4"/><path d="M17 5H1"/></svg>
-      </a>
+<section class="shop-hero" id="heroSlider" aria-roledescription="carousel" aria-label="Featured Hydrojelly formulas">
+  <div class="slide on" role="group" aria-label="1 of 3">
+    <img src="assets/banners/collection-slide-1.jpg" alt="I Love You So Matcha Hydrojelly jar" fetchpriority="high">
+    <div class="veil"></div>
+    <div class="hero-copy">
+      <p class="eyebrow">The Collection &middot; Calm. Refresh. Glow.</p>
+      <h1 data-keep-case>I Love You So Matcha&trade;</h1>
+      <p class="sub">Matcha and spirulina in a cooling jelly that calms redness and refreshes tired skin, leaving a soft natural glow.</p>
+      <div class="hero-ctas">
+        <a class="btn-pink" href="product.html?id=808">Discover the Formula</a>
+        <a class="text-link" href="hydrojelly-collection.html">All 38 Hydrojelly Masks
+          <svg width="16" height="10" viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m13 1 4 4-4 4"/><path d="M17 5H1"/></svg>
+        </a>
+      </div>
     </div>
+  </div>
+  <div class="slide" role="group" aria-label="2 of 3">
+    <img src="assets/banners/collection-slide-2.jpg" alt="Salmon DNA PDRN Hydrojelly jar" loading="lazy">
+    <div class="veil"></div>
+    <div class="hero-copy">
+      <p class="eyebrow">The Collection &middot; New Formula</p>
+      <h1 data-keep-case>Salmon DNA PDRN</h1>
+      <p class="sub">Advanced skin repair and regeneration. A low molecular weight DNA extract that wakes the skin at a cellular level. Repair. Renew. Glow.</p>
+      <div class="hero-ctas">
+        <a class="btn-pink" href="product.html?id=805">Discover the Formula</a>
+        <a class="text-link" href="hydrojelly-collection.html">All 38 Hydrojelly Masks
+          <svg width="16" height="10" viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m13 1 4 4-4 4"/><path d="M17 5H1"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="slide" role="group" aria-label="3 of 3">
+    <img src="assets/banners/collection-slide-3.jpg" alt="Egyptian Rose Hydrojelly jar" loading="lazy">
+    <div class="veil"></div>
+    <div class="hero-copy">
+      <p class="eyebrow">The Collection &middot; Hydrating &amp; Wrinkle Care</p>
+      <h1 data-keep-case>Egyptian Rose</h1>
+      <p class="sub">Rose centifolia and hyaluronic acid deeply hydrate and comfort, smoothing fine lines for a plump, rested complexion.</p>
+      <div class="hero-ctas">
+        <a class="btn-pink" href="product.html?id=775">Discover the Formula</a>
+        <a class="text-link" href="hydrojelly-collection.html">All 38 Hydrojelly Masks
+          <svg width="16" height="10" viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m13 1 4 4-4 4"/><path d="M17 5H1"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="slider-nav">
+    <button class="arrow" id="slPrev" aria-label="Previous"><svg viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 1-4 4 4 4"/><path d="M1 5h16"/></svg></button>
+    <div class="dots" id="slDots"></div>
+    <button class="arrow" id="slNext" aria-label="Next"><svg viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m13 1 4 4-4 4"/><path d="M17 5H1"/></svg></button>
   </div>
 </section>
 
@@ -268,13 +304,28 @@
 </footer>
 
 <script>
-  // Play the hero video once and rest smoothly on its final frame (the jar).
-  const v = document.getElementById('heroVideo');
-  v.addEventListener('ended', () => {
-    // step a hair back from the very end so the browser keeps painting a clean final frame
-    v.currentTime = Math.max(0, v.duration - 0.05);
-    v.pause();
-  });
+  // Hero slider: fades between the three scenes, auto-advances, arrows, dots and swipe.
+  (function () {
+    const slides = [...document.querySelectorAll('#heroSlider .slide')];
+    const dots = document.getElementById('slDots');
+    let i = 0, timer;
+    slides.forEach((s, n) => { const b = document.createElement('button'); b.setAttribute('aria-label', 'Slide ' + (n + 1)); b.onclick = () => go(n, true); dots.appendChild(b); });
+    function go(n, byUser) {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => s.classList.toggle('on', k === i));
+      [...dots.children].forEach((d, k) => d.classList.toggle('on', k === i));
+      if (byUser) restart();
+    }
+    function restart() { clearInterval(timer); timer = setInterval(() => go(i + 1), 6500); }
+    document.getElementById('slPrev').onclick = () => go(i - 1, true);
+    document.getElementById('slNext').onclick = () => go(i + 1, true);
+    let x0 = null;
+    const hero = document.getElementById('heroSlider');
+    hero.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    hero.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 40) go(dx < 0 ? i + 1 : i - 1, true); });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) clearInterval(timer); else restart(); });
+    go(0); restart();
+  })();
 </script>
 <script src="assets/reveal.js?v=5"></script>
 </body>
