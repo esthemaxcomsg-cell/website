@@ -2,6 +2,21 @@
    text fades up, cards come in staggered and images ease into place.
    Runs last on every page so grids built by the page's own script are included. */
 (function () {
+  /* Headings read in sentence case, as the design calls for, whatever case they
+     were typed in. Product, article and brand-word names keep their own case. */
+  var KEEP = '.info h1, .article h1, .a-body h3, .post-card h3, .jelly-card h3, .pcard h3, .rel-card h3, .prod-meta h3, ' +
+             '.cat-card h3, .k-name, .pdrn-end h2, .lh-word, .pdrn-word, [data-keep-case]';
+  var PROPER = { esthemax: 'Esthemax', hydrojelly: 'Hydrojelly', pdrn: 'PDRN', dna: 'DNA', singapore: 'Singapore', faq: 'FAQ', matcha: 'Matcha' };
+  [].slice.call(document.querySelectorAll('h1, h2, h3, h4, .sec-title')).forEach(function (h) {
+    if (h.closest(KEEP)) return;
+    var first = true, walker = document.createTreeWalker(h, NodeFilter.SHOW_TEXT, null), n;
+    while ((n = walker.nextNode())) {
+      var s = n.nodeValue.toLowerCase().replace(/\b([a-z]+)\b/g, function (m, w) { return PROPER[w] || w; });
+      if (first && s.trim()) { s = s.replace(/[a-z\u00C0-\u024F]/i, function (ch) { return ch.toUpperCase(); }); first = false; }
+      n.nodeValue = s;
+    }
+  });
+
   /* inside the CMS live preview the page should simply be there, no entrances */
   if (/[?&]cms=1/.test(location.search)) return;
 
