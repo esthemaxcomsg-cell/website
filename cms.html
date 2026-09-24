@@ -126,9 +126,10 @@
 <div class="gate" id="gate">
   <div class="gate-card">
     <h1>Esthemax CMS</h1>
-    <p>Enter the passphrase to manage products and blog posts.</p>
-    <input id="pw" type="password" placeholder="Passphrase" autocomplete="current-password">
-    <button id="pwBtn">Enter</button>
+    <p>Sign in to manage products and blog posts.</p>
+    <input id="email" type="email" placeholder="Email" autocomplete="username" style="margin-bottom:10px">
+    <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
+    <button id="pwBtn">Sign in</button>
     <div class="gate-err" id="pwErr"></div>
   </div>
 </div>
@@ -193,30 +194,23 @@
 
 <script src="assets/data/posts.js"></script>
 <script src="assets/data/catalog.js"></script>
+<script src="assets/data/supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-/* Soft login gate. This is a static site, so the check runs in the browser:
-   it keeps the CMS private from ordinary visitors, but it is not a substitute
-   for server-side auth. For real protection, host this page behind Netlify or
-   Vercel password protection. */
-const PW_HASH = '3d8796b42ff6f7cfe91fc8c05a0132796b1d1affc2b00c19199d23db1e3486ff';
-
-async function sha256(s) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
-}
+/* Real login: staff accounts live in Supabase (Authentication > Users). */
+const sb = supabase.createClient(window.EM_SB.url, window.EM_SB.key);
 async function tryLogin() {
-  if (await sha256(document.getElementById('pw').value) === PW_HASH) {
-    sessionStorage.setItem('em_cms_ok', '1');
-    document.getElementById('gate').style.display = 'none';
-    boot();
-  } else {
-    document.getElementById('pwErr').textContent = 'Incorrect passphrase.';
-    document.getElementById('pw').value = '';
-  }
+  const err = document.getElementById('pwErr');
+  err.textContent = 'Signing in...';
+  const { error } = await sb.auth.signInWithPassword({ email: document.getElementById('email').value.trim(), password: document.getElementById('pw').value });
+  if (error) { err.textContent = 'That email and password did not match.'; document.getElementById('pw').value = ''; return; }
+  err.textContent = '';
+  document.getElementById('gate').style.display = 'none';
+  boot();
 }
 document.getElementById('pwBtn').onclick = tryLogin;
 document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
-document.getElementById('logoutBtn').onclick = () => { sessionStorage.removeItem('em_cms_ok'); location.reload(); };
+document.getElementById('logoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s === undefined || s === null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -228,10 +222,17 @@ let DATA = { posts: [], masks: [], skincare: [], sets: [], contact: null };
 let TAB = 'posts';
 let currentId = null;
 
+let LIVE = null;   // what is published right now, straight from Supabase
+async function fetchLive() {
+  const { data, error } = await sb.from('content').select('kind,id,ord,data').order('ord').order('id');
+  if (error || !data || !data.length) return null;
+  const by = {}; data.forEach(r => (by[r.kind] = by[r.kind] || []).push(r.data));
+  return { masks: by.mask || [], skincare: by.skincare || [], sets: by.set || [], posts: by.post || [], contact: (by.contact && by.contact[0]) || (window.EM || {}).contact || null };
+}
 function loadData() {
   const draftPosts = safeParse(localStorage.getItem('em_posts'));
-  DATA.posts = Array.isArray(draftPosts) && draftPosts.length ? draftPosts : clone(window.EM_POSTS || []);
-  const base = window.EM || { masks: [], skincare: [], sets: [], contact: null };
+  DATA.posts = Array.isArray(draftPosts) && draftPosts.length ? draftPosts : clone(LIVE ? LIVE.posts : (window.EM_POSTS || []));
+  const base = LIVE || window.EM || { masks: [], skincare: [], sets: [], contact: null };
   const draftCat = safeParse(localStorage.getItem('em_catalog'));
   const cat = draftCat && draftCat.masks ? draftCat : clone(base);
   DATA.masks = cat.masks || [];
@@ -247,7 +248,7 @@ function persist() {
     }));
   } catch (e) {
     const s = document.getElementById('status');
-    if (s) s.textContent = 'This browser has run out of draft space for photos. Press Publish Changes to export what you have, then Discard draft, and carry on.';
+    if (s) s.textContent = 'This browser has run out of draft space for photos. Press Publish Changes to put what you have live, then carry on.';
     return false;
   }
   meter();
@@ -328,7 +329,7 @@ function formHtml(p) {
     + '<div class="f"><label>Article</label><div class="hint" style="margin:0">Build the article <b>on the page to the right</b>: click the text and type, press <b>+ Add block</b> for headings, photos, photo with text, quotes and dividers. Hover a block to drag it up or down, and drag the pink corner of a photo to resize it.</div></div>'
     + '<div class="row2">'
     + '<div class="f"><label>YouTube link (optional)</label><input id="c-youtube" value="' + esc(p.youtube) + '" placeholder="https://youtu.be/..."></div>'
-    + '<div class="f"><label>PDF path (optional)</label><input id="c-pdf" value="' + esc(p.pdf) + '" placeholder="assets/pdfs/catalog.pdf"></div></div>';
+    + '<div class="f"><label>PDF link (optional)</label><input id="c-pdf" value="' + esc(p.pdf) + '" placeholder="https://... or assets/pdfs/catalog.pdf"></div></div>';
 
   if (TAB === 'masks') return ''
     + '<div class="row3">'
@@ -869,56 +870,60 @@ document.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
 $('#openBtn').onclick = () => { const u = pageUrl(); if (u) window.open(u, '_blank'); };
 addEventListener('resize', fitPreview);
 
-/* ---------------- publish: one zip with the data and any new photos ---------------- */
-const CRC = (() => { const t = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
-const crc32 = u8 => { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
-function makeZip(files) {           // files: [{name, data: Uint8Array}], stored without compression
-  const enc = new TextEncoder(), parts = [], central = []; let offset = 0;
-  files.forEach(f => {
-    const name = enc.encode(f.name), crc = crc32(f.data), size = f.data.length;
-    const head = new DataView(new ArrayBuffer(30));
-    head.setUint32(0, 0x04034b50, true); head.setUint16(4, 20, true); head.setUint16(8, 0, true);
-    head.setUint32(14, crc, true); head.setUint32(18, size, true); head.setUint32(22, size, true); head.setUint16(26, name.length, true);
-    parts.push(new Uint8Array(head.buffer), name, f.data);
-    const c = new DataView(new ArrayBuffer(46));
-    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true);
-    c.setUint32(16, crc, true); c.setUint32(20, size, true); c.setUint32(24, size, true); c.setUint16(28, name.length, true); c.setUint32(42, offset, true);
-    central.push(new Uint8Array(c.buffer), name);
-    offset += 30 + name.length + size;
-  });
-  const cSize = central.reduce((n, p) => n + p.length, 0);
-  const end = new DataView(new ArrayBuffer(22));
-  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
-  end.setUint32(12, cSize, true); end.setUint32(16, offset, true);
-  return new Blob([...parts, ...central, new Uint8Array(end.buffer)], { type: 'application/zip' });
+/* ---------------- publish: photos go to Supabase storage, content to the database, live at once ---------------- */
+function dataUrlBlob(u) { const b = atob(u.split(',')[1]); const a = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return new Blob([a], { type: 'image/jpeg' }); }
+async function upload(url, path) {
+  if (!/^data:image\//.test(url || '')) return url;
+  const name = path + '-' + Date.now().toString(36) + '.jpg';
+  const { error } = await sb.storage.from('media').upload(name, dataUrlBlob(url), { contentType: 'image/jpeg', upsert: true });
+  if (error) throw new Error('Photo upload failed: ' + error.message);
+  return sb.storage.from('media').getPublicUrl(name).data.publicUrl;
 }
-function dataUrlBytes(u) { const b = atob(u.split(',')[1]); const a = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
-
-$('#publishBtn').onclick = () => {
-  const enc = new TextEncoder(), files = [], out = clone(DATA);
-  const lift = (url, path) => { if (!/^data:image\//.test(url || '')) return url; files.push({ name: path, data: dataUrlBytes(url) }); return path; };
-  out.masks.forEach(p => { p.img = lift(p.img, 'assets/uploads/mask-' + slugify(p.code) + '.jpg'); });
-  out.sets.forEach(p => { p.img = lift(p.img, 'assets/uploads/set-' + slugify(p.code) + '.jpg'); });
-  out.skincare.forEach(p => { p.img = lift(p.img, 'assets/uploads/skincare-' + slugify(p.slug) + '.jpg'); });
-  out.posts.forEach(p => {
-    p.cover = lift(p.cover, 'assets/uploads/post-' + slugify(p.id) + '-cover.jpg');
-    let n = 0;
-    p.body = String(p.body || '').replace(/src="(data:image\/[^"]+)"/g, (m, url) => 'src="' + lift(url, 'assets/uploads/post-' + slugify(p.id) + '-' + (++n) + '.jpg') + '"');
-  });
-  files.unshift(
-    { name: 'assets/data/posts.js', data: enc.encode('/* Beauty Resource posts. Exported from cms.html. */\nwindow.EM_POSTS = ' + JSON.stringify(out.posts, null, 1) + ';\n') },
-    { name: 'assets/data/catalog.js', data: enc.encode('/* Product catalog. Exported from cms.html. */\nwindow.EM = ' + JSON.stringify({ masks: out.masks, sets: out.sets, skincare: out.skincare, contact: out.contact }, null, 1) + ';\n') }
-  );
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(makeZip(files));
-  a.download = 'esthemax-update.zip';
-  a.click();
-  alert('esthemax-update.zip downloaded (' + (files.length - 2) + ' new photo(s) included).\n\nSend this file to your web developer, or run tools/apply-cms-update.sh in the website folder, to make the changes live for everyone.');
+$('#publishBtn').onclick = async () => {
+  const btn = $('#publishBtn'), status = $('#status');
+  if (!confirm('Publish all changes to the live website now?')) return;
+  btn.disabled = true; btn.textContent = 'Publishing...';
+  try {
+    const out = clone(DATA);
+    for (const p of out.masks) p.img = await upload(p.img, 'mask-' + slugify(p.code));
+    for (const p of out.sets) p.img = await upload(p.img, 'set-' + slugify(p.code));
+    for (const p of out.skincare) p.img = await upload(p.img, 'skincare-' + slugify(p.slug));
+    for (const p of out.posts) {
+      p.cover = await upload(p.cover, 'post-' + slugify(p.id) + '-cover');
+      const found = [...String(p.body || '').matchAll(/src="(data:image\/[^"]+)"/g)].map(m => m[1]);
+      let n = 0;
+      for (const u of found) { const pub = await upload(u, 'post-' + slugify(p.id) + '-' + (++n)); p.body = p.body.split(u).join(pub); }
+    }
+    const rows = [];
+    out.masks.forEach((d, i) => rows.push({ kind: 'mask', id: String(d.code), ord: i, data: d }));
+    out.skincare.forEach((d, i) => rows.push({ kind: 'skincare', id: String(d.slug), ord: i, data: d }));
+    out.sets.forEach((d, i) => rows.push({ kind: 'set', id: String(d.code), ord: i, data: d }));
+    out.posts.forEach((d, i) => rows.push({ kind: 'post', id: String(d.id), ord: i, data: d }));
+    if (out.contact) rows.push({ kind: 'contact', id: 'contact', ord: 0, data: out.contact });
+    const { error } = await sb.from('content').upsert(rows, { onConflict: 'kind,id' });
+    if (error) throw new Error(error.message);
+    // anything deleted in the CMS is removed from the site too
+    for (const kind of ['mask', 'skincare', 'set', 'post']) {
+      const keep = rows.filter(r => r.kind === kind).map(r => r.id);
+      let q = sb.from('content').delete().eq('kind', kind);
+      if (keep.length) q = q.not('id', 'in', '(' + keep.map(k => '"' + k.replace(/"/g, '') + '"').join(',') + ')');
+      const del = await q; if (del.error) throw new Error(del.error.message);
+    }
+    localStorage.removeItem('em_posts'); localStorage.removeItem('em_catalog'); localStorage.removeItem('em_live');
+    LIVE = await fetchLive(); loadData(); renderList(); meter();
+    if (currentId !== null) load(currentId); else newItem();
+    status.textContent = 'Published. The website is showing these changes now.';
+    alert('Published. The website is live with your changes.');
+  } catch (e) {
+    status.textContent = 'Publish failed: ' + e.message + ' (your draft is still saved here, try again).';
+    alert('Publish failed: ' + e.message);
+  }
+  btn.disabled = false; btn.textContent = 'Publish Changes';
 };
 
 $('#resetBtn').onclick = () => {
   if (!confirm('Throw away every unpublished change in this browser and go back to what is live on the website?')) return;
-  localStorage.removeItem('em_posts'); localStorage.removeItem('em_catalog'); location.reload();
+  localStorage.removeItem('em_posts'); localStorage.removeItem('em_catalog'); localStorage.removeItem('em_live'); location.reload();
 };
 
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
@@ -931,8 +936,13 @@ document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
 $('#search').oninput = renderList;
 $('#newBtn').onclick = newItem;
 
-function boot() { loadData(); fitPreview(); meter(); newItem(); }
-if (sessionStorage.getItem('em_cms_ok') === '1') { document.getElementById('gate').style.display = 'none'; boot(); }
+async function boot() {
+  $('#formTitle').textContent = 'Loading...';
+  LIVE = await fetchLive();
+  if (!LIVE) $('#hint').innerHTML = '<b>Could not reach the live content.</b> Showing the built-in copy. Check the internet connection, or that the Supabase setup script has been run.';
+  loadData(); fitPreview(); meter(); newItem();
+}
+sb.auth.getSession().then(({ data }) => { if (data.session) { document.getElementById('gate').style.display = 'none'; boot(); } });
 </script>
 </body>
 </html>
