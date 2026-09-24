@@ -296,7 +296,7 @@ section.faq {
 .site-footer .footer-contact p,
 .site-footer .footer-base p,
 footer.footer .footer-bottom span,
-footer.footer .footer-bottom a { color: rgba(255, 255, 255, 0.72); }
+footer.footer .footer-bottom a { color: #fff; }
 .site-footer .footer-base, footer.footer .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.22); }
 .site-footer img[src*="logo-esthemax"], footer.footer img[src*="logo-esthemax"] { filter: brightness(0) invert(1); }
 @media (min-width: 901px) {
