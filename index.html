@@ -496,11 +496,17 @@
     overflow: hidden;
   }
   .band .band-bg { position: absolute; inset: 0; }
-  .band .band-bg img { width: 100%; height: 100%; object-fit: cover; }
-  .band .band-veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,12,6,0.82) 0%, rgba(20,12,6,0.45) 55%, rgba(20,12,6,0.1) 100%); }
+  .band .band-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 62% center; }
+  /* bright scene: a soft light wash on the left keeps the dark copy readable */
+  .band .band-veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,250,248,0.8) 0%, rgba(255,250,248,0.45) 40%, rgba(255,250,248,0) 62%); }
+  @media (max-width: 900px) {
+    /* narrower screens: the jars sit behind the copy, so wash the whole scene lighter */
+    .band .band-veil { background: rgba(255, 250, 248, 0.78); }
+    .band .band-bg img { object-position: 75% center; }
+  }
   .band-in { position: relative; z-index: 2; max-width: 1560px; margin: 0 auto; padding: 80px 40px; width: 100%; }
-  .band h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 500; font-size: clamp(30px, 3.4vw, 48px); color: #F6EFE2; max-width: 560px; line-height: 1.15; margin-bottom: 16px; }
-  .band p { color: rgba(246,239,226,0.82); font-size: 15px; max-width: 460px; line-height: 1.6; margin-bottom: 30px; }
+  .band h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 500; font-size: clamp(30px, 3.4vw, 48px); color: var(--ink); max-width: 560px; line-height: 1.15; margin-bottom: 16px; }
+  .band p { color: var(--soft); font-size: 15px; max-width: 460px; line-height: 1.6; margin-bottom: 30px; }
   .btn-light {
     display: inline-block;
     background: #F6EFE2;
@@ -813,12 +819,12 @@
 
 <!-- ================= COLLECTION BAND ================= -->
 <div class="band">
-  <div class="band-bg"><img src="assets/banners/menu-jars.jpg" alt="Hydrojelly mask jars on a dark backdrop"></div>
+  <div class="band-bg"><img src="assets/banners/collection-slide-1.jpg" alt="Hydrojelly mask jars on a bright stone backdrop"></div>
   <div class="band-veil"></div>
   <div class="band-in">
     <h2>Texture, Transformed.</h2>
     <p>Electrolyte-infused Hydrojelly masks that seal in hydration and elevate every treatment.</p>
-    <a class="btn-light" href="hydrojelly-collection.html">Shop the Collection &rarr;</a>
+    <a class="btn-pink" href="hydrojelly-collection.html">Shop the Collection &rarr;</a>
   </div>
 </div>
 
