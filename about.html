@@ -61,18 +61,32 @@
   .slider-bar { flex:1; height:2px; background:var(--line); border-radius:2px; overflow:hidden; margin-right:8px; }
   .slider-bar i { display:block; height:100%; background:#E2007E; width:0; transition:width .6s ease; }
 
-  /* ---- history timeline: year fades in, then the words slide out ---- */
+  /* ---- history timeline: a centre line, events alternate sides, year lights up then the card slides in ---- */
   .history { padding:0 0 90px; }
-  .timeline { position:relative; margin-top:20px; padding-left:clamp(28px,4vw,56px); }
-  .timeline::before { content:''; position:absolute; left:8px; top:8px; bottom:8px; width:2px; background:var(--line); }
-  .timeline .line-fill { position:absolute; left:8px; top:8px; width:2px; height:0; background:#E2007E; transition:height .5s linear; }
-  .ev { position:relative; display:grid; grid-template-columns:clamp(110px,14vw,170px) 1fr; gap:22px; align-items:start; padding:26px 0 30px; }
-  .ev::before { content:''; position:absolute; left:calc(-1 * clamp(28px,4vw,56px) + 3px); top:38px; width:12px; height:12px; border-radius:50%; background:var(--line); transition:background .4s ease, transform .4s ease; }
-  .ev.in::before { background:#E2007E; transform:scale(1.25); }
-  .ev .yr { font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:clamp(34px,4vw,54px); line-height:1; color:#E2007E; letter-spacing:-0.03em; opacity:0; transform:translateY(14px); transition:opacity .7s ease, transform .7s cubic-bezier(0.2,0.6,0.2,1); }
-  .ev .tx { font-size:16px; line-height:1.7; color:var(--soft); padding-top:10px; opacity:0; transform:translateX(-18px); transition:opacity .7s ease .45s, transform .7s cubic-bezier(0.2,0.6,0.2,1) .45s; }
+  .history h2, .history .lead { text-align:center; margin-left:auto; margin-right:auto; }
+  .timeline { position:relative; margin-top:30px; padding:10px 0; }
+  .timeline::before { content:''; position:absolute; left:50%; top:0; bottom:0; width:2px; margin-left:-1px; background:var(--line); }
+  .timeline .line-fill { position:absolute; left:50%; top:0; width:2px; margin-left:-1px; height:0; background:#E2007E; transition:height .6s linear; }
+  .ev { position:relative; display:grid; grid-template-columns:1fr 1fr; gap:0 clamp(40px,6vw,90px); align-items:center; padding:22px 0; }
+  .ev::before { content:''; position:absolute; left:50%; top:50%; width:16px; height:16px; margin:-8px 0 0 -8px; border-radius:50%; background:#fff; border:2px solid var(--line); z-index:2; transition:border-color .4s ease, background .4s ease, transform .4s ease, box-shadow .4s ease; }
+  .ev.in::before { border-color:#E2007E; background:#E2007E; transform:scale(1.15); box-shadow:0 0 0 6px rgba(226,0,126,.14); }
+  .ev .yr { font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:clamp(36px,4.4vw,60px); line-height:1; color:#E2007E; letter-spacing:-0.03em; opacity:0; transform:translateY(16px); transition:opacity .7s ease, transform .7s cubic-bezier(0.2,0.6,0.2,1); }
+  .ev .tx { background:#FFFCFD; border:1px solid var(--line); border-radius:16px; padding:20px 24px; font-size:15.5px; line-height:1.65; color:var(--soft); opacity:0; transition:opacity .7s ease .4s, transform .8s cubic-bezier(0.2,0.6,0.2,1) .4s, box-shadow .3s ease; }
   .ev .tx b { color:var(--ink); font-weight:600; }
+  .ev .tx:hover { box-shadow:0 14px 30px rgba(166,30,96,.12); }
+  /* odd events: year on the left, card on the right; even events mirror */
+  .ev:nth-child(odd) .yr { text-align:right; }
+  .ev:nth-child(odd) .tx { transform:translateX(40px); }
+  .ev:nth-child(even) .yr { order:2; text-align:left; }
+  .ev:nth-child(even) .tx { order:1; transform:translateX(-40px); }
   .ev.in .yr, .ev.in .tx { opacity:1; transform:none; }
+  @media (max-width:760px) {
+    .timeline::before, .timeline .line-fill { left:12px; margin-left:0; }
+    .ev { grid-template-columns:1fr; gap:8px; padding:18px 0 18px 40px; }
+    .ev::before { left:12px; top:26px; margin:0 0 0 -7px; width:14px; height:14px; }
+    .ev .yr, .ev:nth-child(odd) .yr, .ev:nth-child(even) .yr { order:1; text-align:left; font-size:34px; }
+    .ev .tx, .ev:nth-child(odd) .tx, .ev:nth-child(even) .tx { order:2; transform:translateY(16px); }
+  }
   @media (max-width:760px) {
     .stats { grid-template-columns:1fr 1fr; }
     .ev { grid-template-columns:1fr; gap:6px; }
@@ -135,7 +149,7 @@
   <div class="bh-in">
     <div class="bh-copy">
       <div class="eyebrow">About Esthemax</div>
-      <h1>Texture,<br>Transformed.</h1>
+      <h1 data-keep-case>The world's #1<br>Hydrojelly.</h1>
       <p>A professional skincare house built around one idea: that a treatment should feel as remarkable as its results.</p>
     </div>
   </div>
@@ -191,7 +205,6 @@
     <h2>Our history</h2>
     <p class="lead">Forty years of powder expertise, from a Korean cosmetics house to the world's leading Hydrojelly.</p>
     <div class="timeline" id="timeline" data-no-reveal>
-      <div class="line-fill" id="lineFill"></div>
       <div class="ev"><div class="yr">1985</div><p class="tx"><b>COKO Cosmetics is founded</b> in Korea (Cosmetics Korea), the house that would become Esthemax.</p></div>
       <div class="ev"><div class="yr">1995</div><p class="tx"><b>The Esthemax brand is launched.</b></p></div>
       <div class="ev"><div class="yr">1998</div><p class="tx"><b>Esthemax becomes the #1 powder company in the world,</b> shipping 40 tons of product every month.</p></div>
@@ -200,6 +213,7 @@
       <div class="ev"><div class="yr">2018</div><p class="tx"><b>The Hydrojelly trademark is registered</b> in 21 countries.</p></div>
       <div class="ev"><div class="yr">2021</div><p class="tx"><b>Esthemax passes the EU Cosmetics Regulation,</b> one of the strictest standards in the world.</p></div>
       <div class="ev"><div class="yr">2026</div><p class="tx"><b>Distributing to 78 countries,</b> and now in Singapore.</p></div>
+      <div class="line-fill" id="lineFill"></div>
     </div>
   </section>
 </main>
@@ -275,7 +289,7 @@
       if (!en.isIntersecting) return;
       en.target.classList.add('in'); io.unobserve(en.target);
       const last = evs.filter(e => e.classList.contains('in')).pop();
-      fill.style.height = (last.offsetTop + 44 - 8) + 'px';
+      fill.style.height = (last.offsetTop + last.offsetHeight / 2) + 'px';
     }), { rootMargin: '0px 0px -22% 0px', threshold: 0.2 });
     evs.forEach(e => io.observe(e));
   })();
