@@ -71,21 +71,20 @@
   .ev::before { content:''; position:absolute; left:50%; top:50%; width:16px; height:16px; margin:-8px 0 0 -8px; border-radius:50%; background:#fff; border:2px solid var(--line); z-index:2; transition:border-color .4s ease, background .4s ease, transform .4s ease, box-shadow .4s ease; }
   .ev.in::before { border-color:#E2007E; background:#E2007E; transform:scale(1.15); box-shadow:0 0 0 6px rgba(226,0,126,.14); }
   .ev .yr { font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:clamp(36px,4.4vw,60px); line-height:1; color:#E2007E; letter-spacing:-0.03em; opacity:0; transform:translateY(16px); transition:opacity .7s ease, transform .7s cubic-bezier(0.2,0.6,0.2,1); }
-  .ev .tx { background:#FFFCFD; border:1px solid var(--line); border-radius:16px; padding:20px 24px; font-size:15.5px; line-height:1.65; color:var(--soft); opacity:0; transition:opacity .7s ease .4s, transform .8s cubic-bezier(0.2,0.6,0.2,1) .4s, box-shadow .3s ease; }
-  .ev .tx b { color:var(--ink); font-weight:600; }
-  .ev .tx:hover { box-shadow:0 14px 30px rgba(166,30,96,.12); }
+  .ev .tx { max-width:380px; font-size:16.5px; line-height:1.6; color:var(--ink); opacity:0; transition:opacity .7s ease .4s, transform .8s cubic-bezier(0.2,0.6,0.2,1) .4s; }
+  .ev .tx b { font-weight:600; }
   /* odd events: year on the left, card on the right; even events mirror */
   .ev:nth-child(odd) .yr { text-align:right; }
-  .ev:nth-child(odd) .tx { transform:translateX(40px); }
+  .ev:nth-child(odd) .tx { text-align:left; justify-self:start; transform:translateX(40px); }
   .ev:nth-child(even) .yr { order:2; text-align:left; }
-  .ev:nth-child(even) .tx { order:1; transform:translateX(-40px); }
+  .ev:nth-child(even) .tx { order:1; text-align:right; justify-self:end; transform:translateX(-40px); }
   .ev.in .yr, .ev.in .tx { opacity:1; transform:none; }
   @media (max-width:760px) {
     .timeline::before, .timeline .line-fill { left:12px; margin-left:0; }
     .ev { grid-template-columns:1fr; gap:8px; padding:18px 0 18px 40px; }
     .ev::before { left:12px; top:26px; margin:0 0 0 -7px; width:14px; height:14px; }
     .ev .yr, .ev:nth-child(odd) .yr, .ev:nth-child(even) .yr { order:1; text-align:left; font-size:34px; }
-    .ev .tx, .ev:nth-child(odd) .tx, .ev:nth-child(even) .tx { order:2; transform:translateY(16px); }
+    .ev .tx, .ev:nth-child(odd) .tx, .ev:nth-child(even) .tx { order:2; text-align:left; justify-self:start; max-width:none; transform:translateY(16px); }
   }
   @media (max-width:760px) {
     .stats { grid-template-columns:1fr 1fr; }
@@ -123,7 +122,7 @@
   }
 </style>
 <link rel="stylesheet" href="assets/reveal.css?v=3">
-<link rel="stylesheet" href="assets/theme.css?v=17">
+<link rel="stylesheet" href="assets/theme.css?v=18">
 </head>
 <body>
 
@@ -285,6 +284,6 @@
     evs.forEach(e => io.observe(e));
   })();
 </script>
-<script src="assets/reveal.js?v=5"></script>
+<script src="assets/reveal.js?v=6"></script>
 </body>
 </html>
