@@ -383,11 +383,13 @@
   .pdrn-end.left  { left:  clamp(20px, 4.5vw, 80px); }
   .pdrn-end.right { right: clamp(20px, 4.5vw, 80px); }
   .pdrn-end .eyebrow { margin-bottom: 12px; }
-  .pdrn-end h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 400; font-size: clamp(26px, 2.5vw, 38px); line-height: 1.1; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 16px; }
-  .pdrn-end p { font-size: 14px; line-height: 1.75; color: var(--soft); }
+  .pdrn-end h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600 !important; font-size: clamp(34px, 3.4vw, 54px); line-height: 1.02; letter-spacing: -0.03em !important; text-transform: none !important; margin-bottom: 16px; }
+  .pdrn-end h2 em { font-style: normal; color: #E2007E; }
+  .pdrn-end .eyebrow { color: #E2007E; }
+  .pdrn-end p { font-size: 15px; line-height: 1.75; color: var(--ink); }
   .pdrn-pt { padding: 14px 0; border-top: 1px solid var(--line); }
   .pdrn-pt:first-child { border-top: none; padding-top: 0; }
-  .pdrn-pt h4 { font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 4px; }
+  .pdrn-pt h4 { font-size: 20px; font-weight: 600; color: #E2007E; margin-bottom: 4px; }
   .pdrn-pt p { font-size: 13px; line-height: 1.55; }
   .pdrn-end .btn-pink { margin-top: 18px; }
 
@@ -404,7 +406,8 @@
     .pdrn-end { width: auto; left: 18px; right: 18px; padding: 20px 22px 22px; background: rgba(253, 250, 251, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 20px; }
     .pdrn-end.left  { top: 84px; transform: translateY(calc((1 - var(--end)) * -18px)); }
     .pdrn-end.right { top: auto; bottom: 18px; transform: translateY(calc((1 - var(--end)) * 18px)); }
-    .pdrn-end h2 { font-size: 24px; margin-bottom: 8px; }
+    .pdrn-end h2 { font-size: 28px; margin-bottom: 8px; }
+    .pdrn-pt h4 { font-size: 16px; }
     .pdrn-end p { font-size: 12.5px; line-height: 1.6; }
     .pdrn-pt { padding: 9px 0; }
     .pdrn-pt:nth-child(3) { display: none; }
@@ -728,7 +731,7 @@
 
     <div class="pdrn-end left">
       <p class="eyebrow">Hydrojelly No. 805</p>
-      <h2>Salmon<br>DNA PDRN</h2>
+      <h2 data-keep-case><em>Salmon</em><br>DNA PDRN</h2>
       <p>A low molecular weight DNA extract that stimulates skin regeneration at the cellular level, activating fibroblasts to produce collagen and repair damaged tissue.</p>
     </div>
     <div class="pdrn-end right">
