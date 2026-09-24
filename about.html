@@ -40,6 +40,45 @@
   .pillar h3 { font-size:13px; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:10px; }
   .pillar p { font-size:13.5px; line-height:1.7; color:var(--soft); }
 
+
+  /* ---- stats ---- */
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; padding:0 0 70px; }
+  .stat { border:1px solid var(--line); border-radius:16px; padding:28px 22px; text-align:center; background:#FFFCFD; }
+  .stat b { display:block; font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:clamp(30px,3vw,42px); color:#E2007E; line-height:1; margin-bottom:10px; letter-spacing:-0.02em; }
+  .stat span { font-size:13.5px; color:var(--soft); line-height:1.5; display:block; }
+
+  /* ---- photo slider ---- */
+  .gallery-sec { padding:0 0 90px; }
+  .gallery-sec h2, .history h2, .story h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:500; font-size:clamp(26px,2.6vw,36px); line-height:1.15; margin-bottom:12px; }
+  .gallery-sec .lead, .history .lead { font-size:15px; color:var(--soft); max-width:560px; line-height:1.7; margin-bottom:30px; }
+  .slider { position:relative; overflow:hidden; border-radius:20px; }
+  .slider-track { display:flex; gap:14px; will-change:transform; transition:transform 0.8s cubic-bezier(0.2,0.6,0.2,1); }
+  .slider-track img { height:clamp(240px,38vw,420px); width:auto; flex:0 0 auto; border-radius:16px; object-fit:cover; display:block; }
+  .slider-nav { display:flex; align-items:center; justify-content:flex-end; gap:12px; margin-top:18px; }
+  .slider-nav button { all:unset; cursor:pointer; width:42px; height:42px; border-radius:50%; border:1px solid var(--ink); display:inline-flex; align-items:center; justify-content:center; color:var(--ink); transition:background .3s, color .3s; }
+  .slider-nav button:hover { background:#E2007E; border-color:#E2007E; color:#fff; }
+  .slider-nav svg { width:16px; height:16px; }
+  .slider-bar { flex:1; height:2px; background:var(--line); border-radius:2px; overflow:hidden; margin-right:8px; }
+  .slider-bar i { display:block; height:100%; background:#E2007E; width:0; transition:width .6s ease; }
+
+  /* ---- history timeline: year fades in, then the words slide out ---- */
+  .history { padding:0 0 90px; }
+  .timeline { position:relative; margin-top:20px; padding-left:clamp(28px,4vw,56px); }
+  .timeline::before { content:''; position:absolute; left:8px; top:8px; bottom:8px; width:2px; background:var(--line); }
+  .timeline .line-fill { position:absolute; left:8px; top:8px; width:2px; height:0; background:#E2007E; transition:height .5s linear; }
+  .ev { position:relative; display:grid; grid-template-columns:clamp(110px,14vw,170px) 1fr; gap:22px; align-items:start; padding:26px 0 30px; }
+  .ev::before { content:''; position:absolute; left:calc(-1 * clamp(28px,4vw,56px) + 3px); top:38px; width:12px; height:12px; border-radius:50%; background:var(--line); transition:background .4s ease, transform .4s ease; }
+  .ev.in::before { background:#E2007E; transform:scale(1.25); }
+  .ev .yr { font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:clamp(34px,4vw,54px); line-height:1; color:#E2007E; letter-spacing:-0.03em; opacity:0; transform:translateY(14px); transition:opacity .7s ease, transform .7s cubic-bezier(0.2,0.6,0.2,1); }
+  .ev .tx { font-size:16px; line-height:1.7; color:var(--soft); padding-top:10px; opacity:0; transform:translateX(-18px); transition:opacity .7s ease .45s, transform .7s cubic-bezier(0.2,0.6,0.2,1) .45s; }
+  .ev .tx b { color:var(--ink); font-weight:600; }
+  .ev.in .yr, .ev.in .tx { opacity:1; transform:none; }
+  @media (max-width:760px) {
+    .stats { grid-template-columns:1fr 1fr; }
+    .ev { grid-template-columns:1fr; gap:6px; }
+    .ev .tx { padding-top:0; }
+  }
+
   .cta-band { background:var(--cream-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
   .cta-in { max-width:1080px; margin:0 auto; padding:64px 40px; display:flex; align-items:center; justify-content:space-between; gap:30px; flex-wrap:wrap; }
   .cta-in h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:500; font-size:clamp(24px,2.6vw,34px); }
@@ -114,20 +153,55 @@
     </div>
   </div>
 
-  <div class="pillars">
-    <div class="pillar">
-      <h3>38 Targeted Formulas</h3>
-      <p>Purpose-driven blends for every skin need and treatment goal, from Hyaluronic Acid to Salmon DNA PDRN.</p>
-    </div>
-    <div class="pillar">
-      <h3>Professional First</h3>
-      <p>Created for experts to deliver consistent, visible results in treatment rooms, spas and studios.</p>
-    </div>
-    <div class="pillar">
-      <h3>Made in USA</h3>
-      <p>Cruelty-free formulas with certified organic ingredients, brought to Singapore by Esthemax Singapore.</p>
-    </div>
+  <div class="stats" aria-label="Esthemax at a glance">
+    <div class="stat"><b>#1</b><span>Hydrojelly mask in the world</span></div>
+    <div class="stat"><b>1985</b><span>Founded in Korea, four decades of formulation</span></div>
+    <div class="stat"><b>78</b><span>Countries where Esthemax is distributed</span></div>
+    <div class="stat"><b>40 t</b><span>Of product shipped every month at our peak</span></div>
   </div>
+
+  <section class="gallery-sec" aria-label="Inside Esthemax">
+    <h2>Inside Esthemax</h2>
+    <p class="lead">From the laboratory in Korea to the filling lines in the United States, every jar is made in our own facilities.</p>
+    <div class="slider" id="gallery">
+      <div class="slider-track" id="galleryTrack">
+      <img src="assets/about/korea-hq-1.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/korea-plant-1.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/usa-2.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/lab-1.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/korea-hq-2.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/korea-line-1.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/usa-3.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/lab-2.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/korea-hq-3.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/korea-plant-2.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/usa-1.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/korea-line-2.jpg" alt="Esthemax facility" loading="lazy">
+      <img src="assets/about/lab-3.jpg" alt="Esthemax facility" loading="lazy">
+      </div>
+    </div>
+    <div class="slider-nav">
+      <div class="slider-bar"><i id="galleryBar"></i></div>
+      <button id="galPrev" aria-label="Previous"><svg viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 1-4 4 4 4"/><path d="M1 5h16"/></svg></button>
+      <button id="galNext" aria-label="Next"><svg viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m13 1 4 4-4 4"/><path d="M17 5H1"/></svg></button>
+    </div>
+  </section>
+
+  <section class="history" aria-label="Our history">
+    <h2>Our history</h2>
+    <p class="lead">Forty years of powder expertise, from a Korean cosmetics house to the world's leading Hydrojelly.</p>
+    <div class="timeline" id="timeline" data-no-reveal>
+      <div class="line-fill" id="lineFill"></div>
+      <div class="ev"><div class="yr">1985</div><p class="tx"><b>COKO Cosmetics is founded</b> in Korea (Cosmetics Korea), the house that would become Esthemax.</p></div>
+      <div class="ev"><div class="yr">1995</div><p class="tx"><b>The Esthemax brand is launched.</b></p></div>
+      <div class="ev"><div class="yr">1998</div><p class="tx"><b>Esthemax becomes the #1 powder company in the world,</b> shipping 40 tons of product every month.</p></div>
+      <div class="ev"><div class="yr">2005</div><p class="tx"><b>The Esthemax trademark is registered</b> under the Madrid System across 40 countries.</p></div>
+      <div class="ev"><div class="yr">2013</div><p class="tx"><b>Esthemax USA is established</b> in the United States.</p></div>
+      <div class="ev"><div class="yr">2018</div><p class="tx"><b>The Hydrojelly trademark is registered</b> in 21 countries.</p></div>
+      <div class="ev"><div class="yr">2021</div><p class="tx"><b>Esthemax passes the EU Cosmetics Regulation,</b> one of the strictest standards in the world.</p></div>
+      <div class="ev"><div class="yr">2026</div><p class="tx"><b>Distributing to 78 countries,</b> and now in Singapore.</p></div>
+    </div>
+  </section>
 </main>
 
 <div class="cta-band">
@@ -168,6 +242,44 @@
     </div>
   </div>
 </footer>
+<script>
+  // photo slider: slides one photo at a time, auto-advances, loops
+  (function () {
+    const track = document.getElementById('galleryTrack'), box = document.getElementById('gallery'), bar = document.getElementById('galleryBar');
+    const imgs = [...track.children]; let i = 0, timer;
+    const maxX = () => Math.max(0, track.scrollWidth - box.clientWidth);
+    function go(n, byUser) {
+      i = Math.max(0, Math.min(n, imgs.length - 1));
+      let x = imgs[i].offsetLeft; if (x > maxX()) { x = maxX(); }
+      track.style.transform = 'translateX(' + (-x) + 'px)';
+      bar.style.width = (maxX() ? Math.min(100, x / maxX() * 100) : 100) + '%';
+      if (byUser) restart();
+    }
+    function next() { const atEnd = imgs[i].offsetLeft >= maxX() || i >= imgs.length - 1; go(atEnd ? 0 : i + 1); }
+    function restart() { clearInterval(timer); timer = setInterval(next, 3800); }
+    document.getElementById('galPrev').onclick = () => go(i - 1, true);
+    document.getElementById('galNext').onclick = () => { next(); restart(); };
+    let x0 = null;
+    box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    box.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 40) { dx < 0 ? next() : go(i - 1); restart(); } });
+    addEventListener('resize', () => go(i));
+    addEventListener('load', () => go(0));
+    restart();
+  })();
+
+  // history: each year lights up as it scrolls in, then its words follow; the line fills down to it
+  (function () {
+    const evs = [...document.querySelectorAll('.ev')], fill = document.getElementById('lineFill'), tl = document.getElementById('timeline');
+    if (!('IntersectionObserver' in window)) { evs.forEach(e => e.classList.add('in')); return; }
+    const io = new IntersectionObserver(es => es.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('in'); io.unobserve(en.target);
+      const last = evs.filter(e => e.classList.contains('in')).pop();
+      fill.style.height = (last.offsetTop + 44 - 8) + 'px';
+    }), { rootMargin: '0px 0px -22% 0px', threshold: 0.2 });
+    evs.forEach(e => io.observe(e));
+  })();
+</script>
 <script src="assets/reveal.js?v=5"></script>
 </body>
 </html>

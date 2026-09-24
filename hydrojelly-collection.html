@@ -713,6 +713,28 @@
   @media (prefers-reduced-motion: reduce) {
     * { transition-duration: 0.01s !important; animation-duration: 0.01s !important; }
   }
+
+  /* ---- how to use ---- */
+  .howto { max-width:1200px; margin:0 auto; padding:80px 40px 30px; }
+  .howto-head { max-width:620px; margin-bottom:40px; }
+  .howto-head h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:500; font-size:clamp(26px,2.8vw,38px); margin-bottom:12px; }
+  .howto-head p { font-size:15px; color:var(--soft); line-height:1.7; }
+  .howto-grid { display:grid; grid-template-columns:1.5fr 1fr; gap:40px; align-items:start; }
+  .steps { display:grid; grid-template-columns:1fr 1fr; gap:22px 30px; }
+  .step { display:flex; gap:16px; align-items:flex-start; }
+  .step span { flex:0 0 38px; width:38px; height:38px; border-radius:50%; background:#E2007E; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:600; font-size:14px; }
+  .step h4 { font-size:16px; font-weight:600; margin-bottom:5px; }
+  .step p { font-size:14px; line-height:1.65; color:var(--soft); }
+  .ratio { background:#FFFCFD; border:1px solid var(--line); border-radius:20px; padding:30px; text-align:center; }
+  .ratio-lbl { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#E2007E; font-weight:500; margin-bottom:18px; }
+  .ratio-row { display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:18px; }
+  .ratio-row i { font-style:normal; font-size:30px; color:#E2007E; }
+  .cup { width:120px; padding:18px 10px; border-radius:16px; background:#F6E9EE; }
+  .cup.water { background:#E6F2F8; }
+  .cup b { display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:34px; font-weight:600; line-height:1; margin-bottom:6px; }
+  .cup span { font-size:12px; color:var(--soft); }
+  .ratio p { font-size:13.5px; color:var(--soft); line-height:1.6; }
+  @media (max-width:820px) { .howto { padding:60px 20px 10px; } .howto-grid, .steps { grid-template-columns:1fr; } }
 </style>
 <link rel="stylesheet" href="assets/reveal.css?v=3">
 <link rel="stylesheet" href="assets/theme.css?v=16">
@@ -826,6 +848,29 @@
       <a class="btn-light" href="contact.html">Get in Touch
         <svg width="15" height="10" viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m13 1 4 4-4 4"/><path d="M17 5H1"/></svg>
       </a>
+    </div>
+  </section>
+
+  <!-- ============ HOW TO USE ============ -->
+  <section class="howto" id="how-to-use">
+    <div class="howto-head">
+      <h2>How to use Hydrojelly</h2>
+      <p>Mixed fresh for every treatment. A few rules make the difference between a good mask and a great one.</p>
+    </div>
+    <div class="howto-grid">
+      <div class="steps">
+        <div class="step"><span>1</span><div><h4>Mix</h4><p>1½ measuring cups of powder to 1 measuring cup of cold distilled water. Never warm water, and no other liquids.</p></div></div>
+        <div class="step"><span>2</span><div><h4>Prep</h4><p>Apply ampoules or serums under the mask to boost absorption. Ask the client whether to cover eyes and lips.</p></div></div>
+        <div class="step"><span>3</span><div><h4>Apply</h4><p>Spread straight away, the mask starts to set within 5 to 6 minutes. Work upward for a lifting effect and go thicker at the edges for easy peeling.</p></div></div>
+        <div class="step"><span>4</span><div><h4>Rest</h4><p>Leave on for at least 15 minutes.</p></div></div>
+        <div class="step"><span>5</span><div><h4>Peel</h4><p>Lift in one piece in the direction of hair growth, never against it. Covering the whole face makes removal easier.</p></div></div>
+        <div class="step"><span>6</span><div><h4>Clean up</h4><p>Never put Hydrojelly in the sink. Wipe excess into the bin with a paper towel, then wipe the bowl with a damp towel.</p></div></div>
+      </div>
+      <div class="ratio">
+        <div class="ratio-lbl">Mixing ratio</div>
+        <div class="ratio-row"><div class="cup"><b>1½</b><span>cups powder</span></div><i>+</i><div class="cup water"><b>1</b><span>cup water</span></div></div>
+        <p>Too thin? Add more powder. Each formula's key ingredient can change how it mixes, applies and peels.</p>
+      </div>
     </div>
   </section>
 
