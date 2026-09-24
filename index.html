@@ -375,8 +375,7 @@
 
   .pdrn-end {
     position: absolute; z-index: 5; top: 50%; width: min(330px, 25vw);
-    background: rgba(253, 250, 251, 0.78); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    border-radius: 20px; padding: 30px 30px 32px;
+    padding: 0;   /* desktop: words sit straight on the scene; the phone rule below boxes them for readability */
     opacity: var(--end); transform: translateY(calc(-50% + (1 - var(--end)) * 22px));
     pointer-events: none;
   }
@@ -402,7 +401,7 @@
     .pdrn-stage .pdrn-chip { display: none; }
     .pdrn-cap { left: 16px; right: 16px; bottom: 16px; }
     .pdrn-cap b { white-space: nowrap; }
-    .pdrn-end { width: auto; left: 18px; right: 18px; padding: 20px 22px 22px; }
+    .pdrn-end { width: auto; left: 18px; right: 18px; padding: 20px 22px 22px; background: rgba(253, 250, 251, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 20px; }
     .pdrn-end.left  { top: 84px; transform: translateY(calc((1 - var(--end)) * -18px)); }
     .pdrn-end.right { top: auto; bottom: 18px; transform: translateY(calc((1 - var(--end)) * 18px)); }
     .pdrn-end h2 { font-size: 24px; margin-bottom: 8px; }
@@ -627,7 +626,7 @@
   }
 </style>
 <link rel="stylesheet" href="assets/reveal.css?v=3">
-<link rel="stylesheet" href="assets/theme.css?v=19">
+<link rel="stylesheet" href="assets/theme.css?v=20">
 </head>
 <body>
 
@@ -1095,6 +1094,6 @@
     });
   });
 </script>
-<script src="assets/reveal.js?v=6"></script>
+<script src="assets/reveal.js?v=7"></script>
 </body>
 </html>
