@@ -478,3 +478,7 @@ h3, h4, h5, h6, .fact h4, .pdrn-pt h4, .pdrn-chip.note h4 { font-weight: 600; le
 .wa-btn svg { width: 26px; height: 26px; flex: 0 0 auto; }
 .wa-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22); color: #fff; }
 @media (max-width: 820px) { .wa-btn { right: 16px; bottom: 16px; padding: 12px; } .wa-btn span { display: none; } }
+
+
+/* page headers: the first line in Esthemax pink, like the PDRN words */
+h1 em { font-style: normal; color: #E2007E; }
