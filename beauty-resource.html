@@ -97,7 +97,7 @@
   }
 </style>
 <link rel="stylesheet" href="assets/reveal.css?v=3">
-<link rel="stylesheet" href="assets/theme.css?v=21">
+<link rel="stylesheet" href="assets/theme.css?v=22">
 </head>
 <body>
 
@@ -162,21 +162,14 @@
     return m ? m[1] : '';
   };
 
-  function kindOf(p) {
-    if (ytId(p.youtube)) return '▶ Video';
-    if (p.pdf) return '⤓ PDF Download';
-    return 'Article';
-  }
+  function kindOf(p) { return 'Read blog'; }
 
   function card(p) {
     return `
     <a class="post-card" href="beauty-resource.html?id=${encodeURIComponent(p.id)}">
       <div class="pc-media"><img src="${esc(p.cover || 'assets/banners/hero-jelly.jpg')}" alt="${esc(p.title)}" loading="lazy"></div>
       <div class="pc-body">
-        <div class="pc-meta">
-          <span class="pc-tag">${esc(p.tag || 'Journal')}</span>
-          <span class="pc-date">${fmtDate(p.date)}</span>
-        </div>
+        <div class="pc-meta"><span class="pc-date">${fmtDate(p.date)}</span></div>
         <h3>${esc(p.title)}</h3>
         <p>${esc(p.excerpt)}</p>
         <span class="pc-more">${kindOf(p)} &rarr;</span>
@@ -195,12 +188,9 @@
     const vid = ytId(p.youtube);
     $('#content').innerHTML = `
     <article class="article">
-      <a class="back-link" href="beauty-resource.html">&larr; All Resources</a>
+      <a class="back-link" href="beauty-resource.html">&larr; All blogs</a>
       <h1>${esc(p.title)}</h1>
-      <div class="a-meta">
-        <span class="pc-tag">${esc(p.tag || 'Journal')}</span>
-        <span class="pc-date">${fmtDate(p.date)}</span>
-      </div>
+      <div class="a-meta"><span class="pc-date">${fmtDate(p.date)}</span></div>
       ${p.cover ? `<div class="a-cover"><img src="${esc(p.cover)}" alt="${esc(p.title)}"></div>` : ''}
       <div class="a-body">${p.body || ''}</div>
       ${vid ? `<div class="a-video"><iframe src="https://www.youtube-nocookie.com/embed/${vid}" title="${esc(p.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>` : ''}

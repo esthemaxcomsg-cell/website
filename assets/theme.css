@@ -445,3 +445,10 @@ h3, h4, h5, h6, .fact h4, .pdrn-pt h4, .pdrn-chip.note h4 { font-weight: 600; le
 
 /* page headers: the first line in Esthemax pink, like the PDRN words */
 h1 em { font-style: normal; color: #E2007E; }
+
+
+/* blog cards: soft rose on hover instead of the solid pink fill */
+.post-card:hover { background: #FFF4F8 !important; border-color: #F1C4D6 !important; box-shadow: 0 18px 34px rgba(166, 30, 96, 0.12); }
+.post-card:hover h3 { color: var(--ink); }
+.post-card:hover p, .post-card:hover .pc-date { color: var(--soft); }
+.post-card:hover .pc-more { color: #E2007E; border-color: #E2007E; }

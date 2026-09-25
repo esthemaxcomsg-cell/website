@@ -263,7 +263,7 @@ function meter() {
 
 const CATS = ['hydrate','brighten','clarify','calm','firm'];
 const SKIN_CATS = ['Serum','Innovation Cream','Cleanser','Enzyme Powder','Toner & Emulsion','Massage Cream','Body Cream & Gel','Sun'];
-const TAGS = ['Education','Video','Catalog','News','Treatment'];
+const TAGS = ['Blog'];
 
 const CFG = {
   posts: {
@@ -272,7 +272,7 @@ const CFG = {
     label: p => p.title,
     sub: p => [p.date, p.tag, p.youtube ? 'video' : '', p.pdf ? 'pdf' : ''],
     img: p => p.cover,
-    blank: () => ({ id:'', title:'', date:new Date().toISOString().slice(0,10), tag:'Education', cover:'', excerpt:'', body:'', youtube:'', pdf:'' })
+    blank: () => ({ id:'', title:'', date:new Date().toISOString().slice(0,10), tag:'Blog', cover:'', excerpt:'', body:'', youtube:'', pdf:'' })
   },
   masks: {
     title: 'Hydrojelly Masks', idKey: 'code',
