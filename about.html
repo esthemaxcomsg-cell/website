@@ -42,9 +42,12 @@
 
 
   /* ---- about us ---- */
-  .about-us { max-width:760px; margin:0 auto; text-align:center; padding:0 0 60px; }
+  .about-us { display:grid; grid-template-columns:1fr 1fr; gap:clamp(36px,6vw,80px); align-items:center; padding:0 0 70px; }
   .about-us h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:500; font-size:clamp(26px,2.8vw,38px); margin-bottom:18px; }
   .about-us p { font-size:16px; line-height:1.8; color:var(--soft); margin-bottom:16px; }
+  .about-us .au-img { border-radius:20px; overflow:hidden; }
+  .about-us .au-img img { width:100%; height:100%; min-height:340px; object-fit:cover; display:block; }
+  @media (max-width:820px) { .about-us { grid-template-columns:1fr; } .about-us .au-img img { min-height:0; height:auto; } }
 
   /* ---- counters: numbers count up when they scroll in ---- */
   .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; padding:10px 0 90px; }
@@ -176,9 +179,12 @@
   <div style="height:clamp(46px,7vh,74px)"></div>
 
   <section class="about-us" aria-label="About Esthemax">
+    <div>
     <h2>About Esthemax</h2>
     <p>Esthemax was not made in a day. Our company and products are the fruit of four decades of research, development and listening to the professionals who use them. As a natural-based cosmetics house built for high performance, we are recognised for a quality that stands above our competitors.</p>
     <p>Since the brand launched in 1995, Esthemax has grown into a complete line of professional treatments for every skin type and concern, and is now found in more than 30,000 aesthetic shops and spas around the world. Esthemax Singapore brings that same ritual, mixed fresh for every treatment, to your treatment room.</p>
+    </div>
+    <div class="au-img"><img src="assets/about/korea-hq-1.jpg" alt="Esthemax headquarters and factory in Korea"></div>
   </section>
 
   <div class="stats" aria-label="Esthemax at a glance">
