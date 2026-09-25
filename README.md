@@ -83,5 +83,5 @@ assets/
 ## Contact
 
 Esthemax Singapore
-18 Boon Lay Way, Tradehub 21, #10-165, Singapore 609966
+2 Jurong East Street 21, #04-13A IMM Building, Singapore 609601
 (+65) 9693 8980 · enquiry@esthemax.com.sg

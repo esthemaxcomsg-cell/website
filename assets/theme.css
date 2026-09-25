@@ -236,7 +236,8 @@ section.faq {
   clip-path: inset(0 -100vmax);
 }
 .faq-item, .faq-q { border-color: var(--line); }
-.faq-q .icon, .faq-q .icon::before, .faq-q .icon::after { background-color: var(--pink); }
+.faq-q .icon { background-color: transparent; }
+.faq-q .icon::before, .faq-q .icon::after { background-color: var(--pink); }
 
 /* ============================================================
    DEEP PINK SURFACES: why-us cards, contact form, footer
