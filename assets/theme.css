@@ -453,3 +453,7 @@ h1 em { font-style: normal; color: #E2007E; }
 .post-card:hover h3 { color: var(--ink); }
 .post-card:hover p, .post-card:hover .pc-date { color: var(--soft); }
 .post-card:hover .pc-more { color: #E2007E; border-color: #E2007E; }
+
+/* header: logo left, nav right (utility icons removed) */
+.header-in { justify-content: space-between; }
+.main-nav { margin: 0; }
