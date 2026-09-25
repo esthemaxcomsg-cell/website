@@ -183,11 +183,6 @@
     <div class="au-img"><img src="assets/about/korea-hq-1.jpg" alt="Esthemax headquarters and factory in Korea"></div>
   </section>
 
-  <div class="stats" aria-label="Esthemax at a glance">
-    <div class="stat"><b data-count="1" data-prefix="#">#1</b><span>Hydrojelly mask in the world</span></div>
-    <div class="stat"><b data-count="1985" data-plain="1">1985</b><span>Founded in Korea</span></div>
-    <div class="stat"><b data-count="78">78</b><span>Countries distributed to</span></div>
-    <div class="stat"><b data-count="30000" data-suffix="+">30,000+</b><span>Aesthetic shops and spas worldwide</span></div>
   </div>
 
   <section class="gallery-sec" aria-label="Inside Esthemax">
@@ -321,23 +316,6 @@
     addEventListener('resize', () => jump(i));
     addEventListener('load', () => jump(i));
     restart();
-  })();
-
-  // counters: the numbers count up the first time they scroll into view
-  (function () {
-    const els = [...document.querySelectorAll('.stat b[data-count]')];
-    const fmt = (v, el) => (el.dataset.prefix || '') + (el.dataset.plain ? String(Math.round(v)) : Math.round(v).toLocaleString('en-US')) + (el.dataset.suffix || '');
-    function run(el) {
-      const end = +el.dataset.count, t0 = performance.now(), dur = 1600;
-      (function step(now) {
-        const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
-        el.textContent = fmt(end * e, el);
-        if (p < 1) requestAnimationFrame(step);
-      })(t0);
-    }
-    if (!('IntersectionObserver' in window)) return;
-    const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { run(en.target); io.unobserve(en.target); } }), { threshold: 0.6 });
-    els.forEach(el => { el.textContent = fmt(0, el); io.observe(el); });
   })();
 
   // history: each year lights up as it scrolls in, then its words follow; the line fills down to it
