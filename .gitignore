@@ -21,3 +21,6 @@ textures.png
 about us.png
 contact us.png
 beauty resource hero.png
+
+# Stripe bulk tool output (contains live links and product ids)
+tools/stripe-links-result.csv
