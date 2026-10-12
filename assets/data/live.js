@@ -15,7 +15,7 @@
     rows.forEach(function (r) { (by[r.kind] = by[r.kind] || []).push(r.data); });
     var old = window.EM || {};
     window.EM = {
-      masks: by.mask || [], sets: by.set || [], skincare: by.skincare || [],
+      masks: by.mask || [], sets: [], skincare: by.skincare || [],
       contact: (by.contact && by.contact[0]) || old.contact || null
     };
     window.EM_POSTS = by.post || [];

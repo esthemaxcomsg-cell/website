@@ -764,11 +764,6 @@
   <!-- ============ Product grid ============ -->
   <section class="grid" id="grid" aria-label="Hydrojelly formulas"></section>
 
-  <!-- ============ Sets & Samples ============ -->
-  <section id="sets" style="padding: 10px clamp(20px, 4vw, 64px) 30px;">
-    <h2 style="font-family:'Plus Jakarta Sans', sans-serif; font-weight:500; font-size:clamp(24px,2.4vw,34px); margin: 30px 0 26px;">Sets &amp; Samples</h2>
-    <div class="grid" id="setsGrid" style="padding: 0;"></div>
-  </section>
 
   <!-- ============ Why Hydrojelly ============ -->
   <section class="why">
@@ -909,19 +904,7 @@
       </div>
     </article>`).join('');
 
-  /* Sets & samples */
-  document.getElementById('setsGrid').innerHTML = window.EM.sets.map((s, i) => `
-    <article class="prod" style="animation-delay:${i * 60}ms">
-      <div class="prod-media-wrap" style="position:relative">
-        <a class="prod-media is-pack" href="product.html?id=${s.code}" aria-label="${s.name}">
-          <img src="${s.img}" alt="${s.name}" loading="lazy">
-        </a>
-      </div>
-      <div class="prod-meta">
-        <h3><a href="product.html?id=${s.code}">${s.name.replace('[Set] ','').replace('[Sample Pack] ','Sample Pack, ')}</a></h3>
-        <p class="prod-tags">${s.desc}</p>
-      </div>
-    </article>`).join('');
+
 
   /* Filters */
   const pills = document.querySelectorAll('.pill');

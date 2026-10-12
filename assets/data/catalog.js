@@ -501,26 +501,7 @@ window.EM = {
    "ingredients": "Potassium Alginate, Algin, *Oryza Sativa (Rice) Powder, Sodium Hyaluronate, Glucose, *Cocos\u0003 Nucifera (Coconut) Fruit Powder, *Camellia Sinensis Leaf (Matcha) Powder, *Spirulina Platensis Powder, *Salix\u0003 Alba (Willow) Bark Extract, Calcium Sulfate, Diatomaceous Earth, Mica, Sodium Chloride, Magnesium Sulfate,\u0003 Potassium Chloride, Chlorophyllin-Copper Complex, Chromium Oxide Greens. *Certified Organic Ingredients."
   }
  ],
- "sets": [
-  {
-   "code": "HMG5",
-   "name": "[Set] 5+2 Hydrojelly Masks",
-   "img": "assets/products/us/HMG5.jpg",
-   "desc": "Choose any 5 Hydrojelly masks and receive 2 more, a curated introduction set for treatment rooms."
-  },
-  {
-   "code": "hmg10",
-   "name": "[Set] 10+4 Hydrojelly Masks",
-   "img": "assets/products/us/hmg10.jpg",
-   "desc": "Choose any 10 Hydrojelly masks and receive 4 more, build a complete Hydrojelly treatment menu."
-  },
-  {
-   "code": "HMS15",
-   "name": "[Sample Pack] Hydrojelly Mask",
-   "img": "assets/products/us/HMS15.jpg",
-   "desc": "A sample pack of Hydrojelly formulas, the easiest way to experience the collection before committing to full jars."
-  }
- ],
+ "sets": [],
  "skincare": [
   {
    "slug": "hydro-serum",
