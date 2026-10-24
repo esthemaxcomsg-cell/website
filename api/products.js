@@ -23,13 +23,14 @@ module.exports = async (req, res) => {
           images: p.images || [],
           price: price.id,
           amount: price.unit_amount,
-          currency: price.currency
+          currency: price.currency,
+          updated: p.updated || p.created || 0
         });
       }
       if (!list.has_more || !list.data.length) break;
       after = list.data[list.data.length - 1].id;
     }
-    out.sort((a, b) => a.name.localeCompare(b.name));
+    out.sort((a, b) => b.updated - a.updated);   // same order as the Stripe product list: most recently updated first
     res.setHeader('Cache-Control', 's-maxage=120, stale-while-revalidate=600');
     res.status(200).json({ products: out });
   } catch (e) {
