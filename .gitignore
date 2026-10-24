@@ -24,3 +24,6 @@ beauty resource hero.png
 
 # Stripe bulk tool output (contains live links and product ids)
 tools/stripe-links-result.csv
+
+# Local-only analytics dashboard (never deployed)
+local-analytics/
