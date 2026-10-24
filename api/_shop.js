@@ -2,17 +2,25 @@
    The Stripe key comes from the STRIPE_SECRET_KEY environment variable set in Vercel
    (Project > Settings > Environment Variables). It is never sent to the browser. */
 
-// Which Stripe products appear in the shop: active, priced in SGD, name contains "Hydrojelly".
-// Products named like quote/invoice codes (e.g. "Q1010") are always left out.
-const MATCH = /hydrojelly/i;
-const EXCLUDE = /^Q\d+$/i;
+// Which Stripe products appear in the shop. Only these, plus any product given the
+// metadata  shop = yes  in the Stripe dashboard (Product > Metadata), so new items can be
+// added from Stripe without touching code. Must be active, one-time, priced in SGD.
+const SHOP_PRODUCTS = [
+  'prod_VUVnpadQTCwGZQ', // ESTHEMAX Calendula Floral Hydrojelly mask
+  'prod_VUVrOdt4dQG3LT', // ESTHEMAX Illuminating Orange Hydrojelly Mask
+  'prod_VUVptYJwcgVcAP', // ESTHEMAX Intensive Aftercare Hydrojelly Mask
+  'prod_VUW51Trgg7DVDr', // ESTHEMAX Skin Warrior Ageless Hydrojelly Mask
+  'prod_VUW4AFgwpcA6o2'  // Pure Himalayan White Tea Hydrojelly Mask
+];
+const EXCLUDE = /^Q\d+$/i;   // quote and invoice items (e.g. Q1010) never appear
 const CURRENCY = 'sgd';
 
 function inShop(product, price) {
   if (!product || !price) return false;
   if (!product.active || !price.active) return false;
   if (EXCLUDE.test((product.name || '').trim())) return false;
-  if (!MATCH.test(product.name || '')) return false;
+  const tagged = product.metadata && String(product.metadata.shop || '').toLowerCase() === 'yes';
+  if (!SHOP_PRODUCTS.includes(product.id) && !tagged) return false;
   if ((price.currency || '').toLowerCase() !== CURRENCY) return false;
   if (price.type && price.type !== 'one_time') return false;
   return typeof price.unit_amount === 'number' && price.unit_amount > 0;
