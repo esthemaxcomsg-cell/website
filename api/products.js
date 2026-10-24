@@ -1,6 +1,9 @@
 /* GET /api/products -> the products the shop sells, straight from the Stripe catalog. */
 const { inShop, stripe } = require('./_shop');
 
+// house style: no registered-trademark marks or long dashes in shop text
+const tidy = s => String(s).replace(/\s*[\u00ae]/g, '').replace(/\s+[\u2014\u2013]\s+/g, ', ').replace(/\s+/g, ' ').trim();
+
 module.exports = async (req, res) => {
   try {
     const out = [];
@@ -14,8 +17,8 @@ module.exports = async (req, res) => {
         if (!inShop(p, price)) continue;
         out.push({
           id: p.id,
-          name: p.name.trim(),
-          description: p.description || '',
+          name: tidy(p.name),
+          description: tidy(p.description || ''),
           image: (p.images && p.images[0]) || '',
           images: p.images || [],
           price: price.id,
